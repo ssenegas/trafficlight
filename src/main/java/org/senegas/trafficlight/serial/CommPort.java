@@ -7,10 +7,11 @@ public class CommPort {
     final SerialPort port;
 
     public CommPort(SerialPort jSerialPort) {
-        this.port = jSerialPort;
-        boolean opened = jSerialPort.openPort();
+        port = jSerialPort;
+
+        boolean opened = port.openPort();
         if (!opened) {
-            throw new RuntimeException("Could not open port ["+jSerialPort.getDescriptivePortName()+"]");
+            throw new RuntimeException("Could not open port ["+port.getDescriptivePortName()+"] "+port.getSystemPortPath());
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

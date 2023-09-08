@@ -3,15 +3,15 @@
  */
 package org.senegas.trafficlight;
 
+import org.senegas.trafficlight.serial.CommPort;
+import org.senegas.trafficlight.serial.CommPortSelector;
 import org.senegas.trafficlight.view.TrafficLightPanel;
 
-import java.awt.EventQueue;
+import javax.swing.*;
+import java.awt.*;
 import java.text.MessageFormat;
-
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
-
-import com.fazecast.jSerialComm.*;
+import java.util.List;
+import java.util.Optional;
 
 public class TrafficLightApp {
 
@@ -20,14 +20,14 @@ public class TrafficLightApp {
 
     public static void main(String[] args) {
 
-        for (SerialPort commPort : SerialPort.getCommPorts()) {
-            System.out.println("commPort:" + commPort);
-            commPort.openPort();
-            if (commPort.isOpen()) {
-                System.out.println("HERE opened port = " + commPort.getSystemPortName());
-                //break;
-            }
-        }
+        List<String> ports = CommPortSelector.get().listPorts();
+        Optional<String> first = ports.stream().filter(name -> name.contains("USB")).findFirst();
+        first.ifPresent(name -> {
+            System.out.println("Found port "+name);
+            CommPort port = CommPortSelector.get().select(name);
+            port.send("hello 2023");
+        });
+
         EventQueue.invokeLater(() -> new TrafficLightApp().create());
     }
 

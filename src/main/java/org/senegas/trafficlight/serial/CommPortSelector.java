@@ -20,16 +20,17 @@ public class CommPortSelector {
     }
 
     public List<String> listPorts() {
-        return Arrays.stream(SerialPort.getCommPorts())
-                .map(SerialPort::getDescriptivePortName)
+        SerialPort[] ports = SerialPort.getCommPorts();
+        return Arrays.stream(ports)
+                .map(SerialPort::getSystemPortName)
                 .collect(Collectors.toList());
     }
 
-    public CommPort select(String descriptivePortName) {
+    public CommPort select(String portName) {
 
-        SerialPort port = SerialPort.getCommPort(descriptivePortName);
+        SerialPort port = SerialPort.getCommPort(portName);
         if (port==null) {
-            throw new RuntimeException("Invalid port name: ["+descriptivePortName+"]");
+            throw new RuntimeException("Invalid port name: ["+portName+"]");
         }
         return new CommPort(port);
     }
