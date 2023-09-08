@@ -22,15 +22,15 @@ public class TrafficLightController extends JPanel  {
         final JButton red = new JButton("Red");
         red.addActionListener(this::handleRedAction);
 
-        final JButton yellow = new JButton("Yellow");
-        yellow.addActionListener(this::handleYellowAction);
+        final JButton amber = new JButton("Yellow");
+        amber.addActionListener(this::handleYellowAction);
 
         final JToggleButton green = new JToggleButton("Green");
         green.addActionListener(this::handleGreenAction);
 
         final JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         actionPanel.add(red);
-        actionPanel.add(yellow);
+        actionPanel.add(amber);
         actionPanel.add(green);
         this.add(actionPanel, BorderLayout.CENTER);
     }

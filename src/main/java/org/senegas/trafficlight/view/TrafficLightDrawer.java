@@ -4,8 +4,8 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 public class TrafficLightDrawer {
-    private int xLeft;
-    private int yTop;
+    private final int xLeft;
+    private final int yTop;
 
     public TrafficLightDrawer(int x, int y) {
         this.xLeft = x;
@@ -24,10 +24,10 @@ public class TrafficLightDrawer {
         g2.setColor(Color.RED);
         g2.fill(redBulb);
 
-        Ellipse2D.Double yellowBulb = new Ellipse2D.Double(xLeft + gap, yTop + width,
+        Ellipse2D.Double amberBulb = new Ellipse2D.Double(xLeft + gap, yTop + width,
                 width - 2 * gap, width - 2 * gap);
         g2.setColor(Color.YELLOW);
-        g2.fill(yellowBulb);
+        g2.fill(amberBulb);
 
         Ellipse2D.Double greenBulb = new Ellipse2D.Double(xLeft + gap, yTop + 2 * width - gap,
                 width - 2 * gap, width - 2 * gap);
