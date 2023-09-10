@@ -22,18 +22,19 @@ public class TrafficLightDrawer {
         g2.setColor(Color.BLACK);
         g2.fill(box);
 
-        Ellipse2D.Double redBulb = new Ellipse2D.Double(xLeft + gap, yTop + gap,
-                width - 2 * gap, width - 2 * gap);
+        double x = xLeft + gap;
+        double w = width - 2 * gap;
+        double h = w;
+
+        Ellipse2D.Double redBulb = new Ellipse2D.Double(x, yTop + gap, w, h);
         g2.setColor(model.isRedOn() ? Color.RED : Color.GRAY);
         g2.fill(redBulb);
 
-        Ellipse2D.Double amberBulb = new Ellipse2D.Double(xLeft + gap, yTop + width,
-                width - 2 * gap, width - 2 * gap);
+        Ellipse2D.Double amberBulb = new Ellipse2D.Double(x, yTop + width, w, h);
         g2.setColor(model.isAmberOn() ? Color.YELLOW : Color.GRAY);
         g2.fill(amberBulb);
 
-        Ellipse2D.Double greenBulb = new Ellipse2D.Double(xLeft + gap, yTop + 2 * width - gap,
-                width - 2 * gap, width - 2 * gap);
+        Ellipse2D.Double greenBulb = new Ellipse2D.Double(x, yTop + 2 * width - gap, w, h);
         g2.setColor(model.isGreenOn() ? Color.GREEN : Color.GRAY);
         g2.fill(greenBulb);
     }
