@@ -1,73 +1,65 @@
 package org.senegas.trafficlight.model;
 
 import java.awt.*;
-import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TrafficLightModel extends AbstractModel implements Serializable {
-    private final Map<Color, Led> leds = new HashMap<>(3);
+    private Led red = new Led(Color.RED);
+    private Led amber = new Led(Color.YELLOW);
+    private Led green = new Led(Color.GREEN);
 
     public TrafficLightModel() {
-        this.leds.put(Color.RED, new Led(Color.RED));
-        this.leds.put(Color.YELLOW, new Led(Color.YELLOW));
-        this.leds.put(Color.GREEN, new Led(Color.GREEN));
     }
 
     public void turnOnRed() {
-        turnOn(Color.RED);
+        Led oldLed = this.red;
+        this.red = new Led(oldLed.getColor(), true, oldLed.getDelay());
+        firePropertyChange("turnOn", oldLed, this.red);
     }
 
     public void turnOnAmber() {
-        turnOn(Color.YELLOW);
+        Led oldLed = this.amber;
+        this.amber = new Led(oldLed.getColor(), true, oldLed.getDelay());
+        firePropertyChange("turnOn", oldLed, this.amber);
     }
 
     public void turnOnGreen() {
-        turnOn(Color.GREEN);
+        Led oldLed = this.green;
+        this.green = new Led(oldLed.getColor(), true, oldLed.getDelay());
+        firePropertyChange("turnOn", oldLed, this.green);
     }
 
     public void turnOffRed() {
-        turnOff(Color.RED);
+        Led oldLed = this.red;
+        this.red = new Led(oldLed.getColor(), false, oldLed.getDelay());
+        firePropertyChange("turnOff", oldLed, this.red);
     }
 
     public void turnOffAmber() {
-        turnOff(Color.YELLOW);
+        Led oldLed = this.amber;
+        this.amber = new Led(oldLed.getColor(), false, oldLed.getDelay());
+        firePropertyChange("turnOff", oldLed, this.amber);
     }
 
     public void turnOffGreen() {
-        turnOff(Color.GREEN);
+        Led oldLed = this.green;
+        this.green = new Led(oldLed.getColor(), false, oldLed.getDelay());
+        firePropertyChange("turnOff", oldLed, this.green);
     }
 
     public boolean isRedOn() {
-        return isOn(Color.RED);
+        return isOn(red);
     }
 
     public boolean isAmberOn() {
-        return isOn(Color.YELLOW);
+        return isOn(amber);
     }
 
     public boolean isGreenOn() {
-        return isOn(Color.GREEN);
+        return isOn(green);
     }
 
-    public boolean isOn(Color c) {
-        return this.leds.get(c).isOn();
-    }
-
-    private void turnOn(Color c) {
-        final Led oldLed = this.leds.get(c);
-        Led newLed = new Led(oldLed.getColor(), true, 0);
-        this.leds.put(c, newLed);
-
-        firePropertyChange("turnOn", oldLed, newLed);
-    }
-
-    private void turnOff(Color c) {
-        final Led oldLed = this.leds.get(c);
-        Led newLed = new Led(oldLed.getColor(), false, 0);
-        this.leds.put(c, newLed);
-
-        firePropertyChange("turnOff", oldLed, newLed);
+    public boolean isOn(Led c) {
+        return c.isOn();
     }
 }
