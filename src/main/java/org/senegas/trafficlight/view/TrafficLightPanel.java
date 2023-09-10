@@ -14,6 +14,8 @@ public class TrafficLightPanel extends JPanel {
         final TrafficLightView view = new TrafficLightView(model);
         final TrafficLightController controller = new TrafficLightController(model, view);
 
+        model.addPropertyChangeListener(view);
+
         this.add(view, BorderLayout.EAST);
         this.add(controller, BorderLayout.CENTER);
     }

@@ -7,6 +7,7 @@ import org.senegas.trafficlight.serial.CommPortSelector;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,16 +24,16 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void initGui() {
-        final JButton red = new JButton("Red");
-        red.addActionListener(this::handleRedAction);
+        final JToggleButton red = new JToggleButton("Red");
+        red.addItemListener(this::handleRedItemAction);
 
-        final JButton amber = new JButton("Amber");
-        amber.addActionListener(this::handleAmberAction);
+        final JToggleButton amber = new JToggleButton("Amber");
+        amber.addItemListener(this::handleAmberItemAction);
 
         final JToggleButton green = new JToggleButton("Green");
-        green.addActionListener(this::handleGreenAction);
+        green.addItemListener(this::handleGreenItemAction);
 
-        final JToggleButton send = new JToggleButton("Send");
+        final JButton send = new JButton("Send");
         send.addActionListener(this::handleSendAction);
 
         final JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -43,16 +44,31 @@ public class TrafficLightController extends JPanel  {
         this.add(actionPanel, BorderLayout.CENTER);
     }
 
-    private void handleRedAction(ActionEvent event) {
-        // Not yet implemented
+    private void handleRedItemAction(ItemEvent itemEvent) {
+        int state = itemEvent.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            model.turnOnRed();
+        } else {
+            model.turnOffRed();
+        }
     }
 
-    private void handleAmberAction(ActionEvent event) {
-        // Not yet implemented
+    private void handleAmberItemAction(ItemEvent itemEvent) {
+        int state = itemEvent.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            model.turnOnAmber();
+        } else {
+            model.turnOffAmber();
+        }
     }
 
-    private void handleGreenAction(ActionEvent event) {
-        // Not yet implemented
+    private void handleGreenItemAction(ItemEvent itemEvent) {
+        int state = itemEvent.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            model.turnOnGreen();
+        } else {
+            model.turnOffGreen();
+        }
     }
 
     private void handleSendAction(ActionEvent event) {

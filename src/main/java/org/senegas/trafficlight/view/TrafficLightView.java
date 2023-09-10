@@ -9,18 +9,10 @@ import java.beans.PropertyChangeListener;
 
 public class TrafficLightView extends JPanel implements PropertyChangeListener  {
 
-    private TrafficLightComponent trafficLight = new TrafficLightComponent();
-    private TrafficLightModel model;
-
     public TrafficLightView(TrafficLightModel model) {
         super(new BorderLayout());
-        this.model = model;
+        TrafficLightComponent trafficLight = new TrafficLightComponent(model);
         this.add(trafficLight);
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        return trafficLight.getPreferredSize();
     }
 
     @Override
