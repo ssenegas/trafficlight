@@ -1,10 +1,9 @@
 package org.senegas.trafficlight.model;
 
 import java.awt.*;
-import java.util.Objects;
 
 public class Led implements Switchable {
-    private Color color;
+    private final Color color;
     private boolean isOn;
     private long delay;
 

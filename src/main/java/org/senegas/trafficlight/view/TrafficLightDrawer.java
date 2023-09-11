@@ -6,9 +6,6 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 public class TrafficLightDrawer {
-    private final int xLeft = 0;
-    private final int yTop = 0;
-
     TrafficLightModel model;
 
     public TrafficLightDrawer(TrafficLightModel model) {
@@ -16,6 +13,8 @@ public class TrafficLightDrawer {
     }
 
     public void draw(Graphics2D g2) {
+        int xLeft = 0;
+        int yTop = 0;
         int width = 50;
         int gap = 5;
         Rectangle box = new Rectangle(xLeft, yTop, width, 3 * width - 2 * gap);
