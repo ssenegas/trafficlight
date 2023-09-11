@@ -1,5 +1,6 @@
 package org.senegas.trafficlight.view;
 
+import net.miginfocom.swing.MigLayout;
 import org.senegas.trafficlight.model.TrafficLightModel;
 import org.senegas.trafficlight.serial.CommPort;
 import org.senegas.trafficlight.serial.CommPortSelector;
@@ -12,21 +13,19 @@ import java.util.List;
 import java.util.Optional;
 
 public class TrafficLightController extends JPanel  {
-
-    private TrafficLightModel model;
-    private TrafficLightView view;
+    private final TrafficLightModel model;
+    private final TrafficLightView view;
     private CommPort port;
 
     public TrafficLightController(TrafficLightModel model, TrafficLightView view) {
         super(new BorderLayout());
-
         this.model = model;
         this.view = view;
         initGui();
-        initComm();
+        initSerialPort();
     }
 
-    private void initComm() {
+    private void initSerialPort() {
         List<String> ports = CommPortSelector.get().listPorts();
         Optional<String> first = ports.stream()
                 .filter(name -> name.contains("COM3")).findFirst();
@@ -37,23 +36,26 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void initGui() {
-        final JToggleButton red = new JToggleButton("Red");
-        red.addItemListener(this::handleRedItemAction);
+        SpinnerModel delayModel = new SpinnerNumberModel(0,
+                0,
+                5000,
+                100);
 
-        final JToggleButton amber = new JToggleButton("Amber");
-        amber.addItemListener(this::handleAmberItemAction);
-
-        final JToggleButton green = new JToggleButton("Green");
-        green.addItemListener(this::handleGreenItemAction);
-
+        final JPanel actionPanel = new JPanel(new MigLayout());
+        final JToggleButton redButton = addLabeledToggleButton(actionPanel, "Red");
+        JSpinner redSpinner = addSpinner(actionPanel, delayModel);
+        final JToggleButton amberButton = addLabeledToggleButton(actionPanel, "Amber");
+        JSpinner amberSpinner = addSpinner(actionPanel, delayModel);
+        final JToggleButton greenButton = addLabeledToggleButton(actionPanel, "Green");
+        JSpinner greenSpinner = addSpinner(actionPanel, delayModel);
         final JButton send = new JButton("Send");
+        actionPanel.add(send, "grow");
+
+        redButton.addItemListener(this::handleRedItemAction);
+        amberButton.addItemListener(this::handleAmberItemAction);
+        greenButton.addItemListener(this::handleGreenItemAction);
         send.addActionListener(this::handleSendAction);
 
-        final JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        actionPanel.add(red);
-        actionPanel.add(amber);
-        actionPanel.add(green);
-        actionPanel.add(send);
         this.add(actionPanel, BorderLayout.CENTER);
     }
 
@@ -90,5 +92,23 @@ public class TrafficLightController extends JPanel  {
         sb.append((model.isAmberOn() ? "A" : "a"));
         sb.append((model.isGreenOn() ? "G" : "g"));
         port.send(sb.toString());
+    }
+
+    private JToggleButton addLabeledToggleButton(Container c, String label) {
+        JLabel l = new JLabel(label);
+        c.add(l);
+
+        final JToggleButton toggleButton = new JToggleButton(label);
+        l.setLabelFor(toggleButton);
+        c.add(toggleButton, "grow");
+
+        return toggleButton;
+    }
+
+    private JSpinner addSpinner(Container c, SpinnerModel model) {
+        JSpinner spinner = new JSpinner(model);
+        c.add(spinner);
+        c.add(new JLabel("ms"), "wrap");
+        return spinner;
     }
 }

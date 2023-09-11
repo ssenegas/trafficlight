@@ -15,6 +15,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.fazecast/jSerialComm
     implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.10.3'
+
+    // https://mvnrepository.com/artifact/com.miglayout/miglayout-swing
+    implementation group: 'com.miglayout', name: 'miglayout-swing', version: '11.1'
 }
 
 test {
