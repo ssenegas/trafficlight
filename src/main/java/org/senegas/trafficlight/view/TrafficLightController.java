@@ -33,7 +33,7 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void initTimer() {
-        TimerTask task = new TrafficLightTask(this.model);
+        TimerTask task = new BlinkerLedsTask(this.model);
         Timer timer = new Timer("Timer");
         timer.scheduleAtFixedRate(task, 0, 1_000);
     }

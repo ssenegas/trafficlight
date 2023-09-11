@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.TimerTask;
 
-class TrafficLightTask extends TimerTask {
+class BlinkerLedsTask extends TimerTask {
     private final TrafficLightModel model;
 
-    public TrafficLightTask(TrafficLightModel model) {
+    public BlinkerLedsTask(TrafficLightModel model) {
         this.model = model;
     }
 
