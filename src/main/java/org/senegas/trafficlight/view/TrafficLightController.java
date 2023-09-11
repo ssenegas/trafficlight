@@ -29,7 +29,7 @@ public class TrafficLightController extends JPanel  {
     private void initComm() {
         List<String> ports = CommPortSelector.get().listPorts();
         Optional<String> first = ports.stream()
-                .filter(name -> name.contains("USB")).findFirst();
+                .filter(name -> name.contains("COM3")).findFirst();
         first.ifPresent(name -> {
             System.out.println("Found port " + name);
             this.port = CommPortSelector.get().select(name);
@@ -85,6 +85,10 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void handleSendAction(ActionEvent event) {
-        port.send("hello 2023");
+        StringBuilder sb = new StringBuilder();
+        sb.append((model.isRedOn() ? "R" : "r"));
+        sb.append((model.isAmberOn() ? "A" : "a"));
+        sb.append((model.isGreenOn() ? "G" : "g"));
+        port.send(sb.toString());
     }
 }

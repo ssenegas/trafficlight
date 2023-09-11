@@ -41,4 +41,13 @@ public class Led implements Switchable {
     public void setDelay(long delay) {
         this.delay = delay;
     }
+
+    @Override
+    public String toString() {
+        return "Led{" +
+                "color=" + color +
+                ", isOn=" + isOn +
+                ", delay=" + delay +
+                '}';
+    }
 }
