@@ -6,16 +6,23 @@ import org.senegas.trafficlight.serial.CommPort;
 import org.senegas.trafficlight.serial.CommPortSelector;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.List;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TrafficLightController extends JPanel  {
     private final TrafficLightModel model;
     private final TrafficLightView view;
     private CommPort port;
+
+    JSpinner redSpinner;
+    JSpinner amberSpinner;
+    JSpinner greenSpinner;
 
     public TrafficLightController(TrafficLightModel model, TrafficLightView view) {
         super(new BorderLayout());
@@ -23,6 +30,13 @@ public class TrafficLightController extends JPanel  {
         this.view = view;
         initGui();
         initSerialPort();
+        initTimer();
+    }
+
+    private void initTimer() {
+        TimerTask task = new TrafficLightTask(this.model);
+        Timer timer = new Timer("Timer");
+        timer.scheduleAtFixedRate(task, 0, 1_000);
     }
 
     private void initSerialPort() {
@@ -36,24 +50,22 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void initGui() {
-        SpinnerModel delayModel = new SpinnerNumberModel(0,
-                0,
-                5000,
-                100);
-
         final JPanel actionPanel = new JPanel(new MigLayout());
         final JToggleButton redButton = addLabeledToggleButton(actionPanel, "Red");
-        JSpinner redSpinner = addSpinner(actionPanel, delayModel);
+        redSpinner = addSpinner(actionPanel);
         final JToggleButton amberButton = addLabeledToggleButton(actionPanel, "Amber");
-        JSpinner amberSpinner = addSpinner(actionPanel, delayModel);
+        amberSpinner = addSpinner(actionPanel);
         final JToggleButton greenButton = addLabeledToggleButton(actionPanel, "Green");
-        JSpinner greenSpinner = addSpinner(actionPanel, delayModel);
+        greenSpinner = addSpinner(actionPanel);
         final JButton send = new JButton("Send");
         actionPanel.add(send, "grow");
 
         redButton.addItemListener(this::handleRedItemAction);
+        redSpinner.addChangeListener(this::handleRedDelayChange);
         amberButton.addItemListener(this::handleAmberItemAction);
+        amberSpinner.addChangeListener(this::handleAmberDelayChange);
         greenButton.addItemListener(this::handleGreenItemAction);
+        greenSpinner.addChangeListener(this::handleGreenDelayChange);
         send.addActionListener(this::handleSendAction);
 
         this.add(actionPanel, BorderLayout.CENTER);
@@ -68,6 +80,12 @@ public class TrafficLightController extends JPanel  {
         }
     }
 
+    private void handleRedDelayChange(ChangeEvent changeEvent) {
+        SpinnerModel delayModel = redSpinner.getModel();
+        int value = (Integer) delayModel.getValue();
+        model.setRedDelay(value);
+    }
+
     private void handleAmberItemAction(ItemEvent itemEvent) {
         int state = itemEvent.getStateChange();
         if (state == ItemEvent.SELECTED) {
@@ -77,6 +95,12 @@ public class TrafficLightController extends JPanel  {
         }
     }
 
+    private void handleAmberDelayChange(ChangeEvent changeEvent) {
+        SpinnerModel delayModel = amberSpinner.getModel();
+        int value = (Integer) delayModel.getValue();
+        model.setAmberDelay(value);
+    }
+
     private void handleGreenItemAction(ItemEvent itemEvent) {
         int state = itemEvent.getStateChange();
         if (state == ItemEvent.SELECTED) {
@@ -84,6 +108,12 @@ public class TrafficLightController extends JPanel  {
         } else {
             model.turnOffGreen();
         }
+    }
+
+    private void handleGreenDelayChange(ChangeEvent changeEvent) {
+        SpinnerModel delayModel = greenSpinner.getModel();
+        int value = (Integer) delayModel.getValue();
+        model.setGreenDelay(value);
     }
 
     private void handleSendAction(ActionEvent event) {
@@ -105,7 +135,11 @@ public class TrafficLightController extends JPanel  {
         return toggleButton;
     }
 
-    private JSpinner addSpinner(Container c, SpinnerModel model) {
+    private JSpinner addSpinner(Container c) {
+        SpinnerModel model = new SpinnerNumberModel(0,
+                0,
+                1000,
+                1000);
         JSpinner spinner = new JSpinner(model);
         c.add(spinner);
         c.add(new JLabel("ms"), "wrap");

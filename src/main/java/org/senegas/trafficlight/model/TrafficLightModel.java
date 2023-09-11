@@ -47,6 +47,24 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
         firePropertyChange("turnOff", oldLed, this.green);
     }
 
+    public void setRedDelay(long value) {
+        Led oldLed = this.red;
+        this.red = new Led(oldLed.getColor(), oldLed.isOn(), value);
+        firePropertyChange("delay", oldLed, this.red);
+    }
+
+    public void setAmberDelay(long value) {
+        Led oldLed = this.amber;
+        this.amber = new Led(oldLed.getColor(), oldLed.isOn(), value);
+        firePropertyChange("delay", oldLed, this.amber);
+    }
+
+    public void setGreenDelay(long value) {
+        Led oldLed = this.green;
+        this.green = new Led(oldLed.getColor(), oldLed.isOn(), value);
+        firePropertyChange("delay", oldLed, this.green);
+    }
+
     public boolean isRedOn() {
         return isOn(red);
     }
@@ -59,7 +77,23 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
         return isOn(green);
     }
 
-    public boolean isOn(Led c) {
+    public long getRedDelay() {
+        return getDelay(red);
+    }
+
+    public long getAmberDelay() {
+        return getDelay(amber);
+    }
+
+    public long getGreenDelay() {
+        return getDelay(green);
+    }
+
+    private boolean isOn(Led c) {
         return c.isOn();
+    }
+
+    private long getDelay(Led c) {
+        return c.getDelay();
     }
 }
