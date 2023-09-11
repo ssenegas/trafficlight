@@ -4,9 +4,9 @@ import java.awt.*;
 import java.io.Serializable;
 
 public class TrafficLightModel extends AbstractModel implements Serializable {
-    private Led red = new Led(Color.RED);
-    private Led amber = new Led(Color.YELLOW);
-    private Led green = new Led(Color.GREEN);
+    private final Led red = new Led(Color.RED);
+    private final Led amber = new Led(Color.YELLOW);
+    private final Led green = new Led(Color.GREEN);
 
     public TrafficLightModel() {
     }

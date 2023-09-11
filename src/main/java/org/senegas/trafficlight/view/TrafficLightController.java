@@ -80,9 +80,8 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void handleRedDelayChange(ChangeEvent changeEvent) {
-        SpinnerModel delayModel = redSpinner.getModel();
-        int value = (Integer) delayModel.getValue();
-        model.setRedDelay(value);
+        SpinnerModel spinnerModel = redSpinner.getModel();
+        this.model.setRedDelay((Integer) spinnerModel.getValue());
     }
 
     private void handleAmberItemAction(ItemEvent itemEvent) {
@@ -95,9 +94,8 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void handleAmberDelayChange(ChangeEvent changeEvent) {
-        SpinnerModel delayModel = amberSpinner.getModel();
-        int value = (Integer) delayModel.getValue();
-        model.setAmberDelay(value);
+        SpinnerModel spinnerModel = amberSpinner.getModel();
+        this.model.setAmberDelay((Integer) spinnerModel.getValue());
     }
 
     private void handleGreenItemAction(ItemEvent itemEvent) {
@@ -110,27 +108,23 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void handleGreenDelayChange(ChangeEvent changeEvent) {
-        SpinnerModel delayModel = greenSpinner.getModel();
-        int value = (Integer) delayModel.getValue();
-        model.setGreenDelay(value);
+        SpinnerModel spinnerModel = greenSpinner.getModel();
+        this.model.setGreenDelay((Integer) spinnerModel.getValue());
     }
 
     private void handleSendAction(ActionEvent event) {
-        StringBuilder sb = new StringBuilder();
-        sb.append((model.isRedOn() ? "R" : "r"));
-        sb.append((model.isAmberOn() ? "A" : "a"));
-        sb.append((model.isGreenOn() ? "G" : "g"));
-        port.send(sb.toString());
+        String msg = (model.isRedOn() ? "R" : "r") +
+                (model.isAmberOn() ? "A" : "a") +
+                (model.isGreenOn() ? "G" : "g");
+        port.send(msg);
     }
 
     private JToggleButton addLabeledToggleButton(Container c, String label) {
         JLabel l = new JLabel(label);
         c.add(l);
-
         final JToggleButton toggleButton = new JToggleButton(label);
         l.setLabelFor(toggleButton);
         c.add(toggleButton, "grow");
-
         return toggleButton;
     }
 
