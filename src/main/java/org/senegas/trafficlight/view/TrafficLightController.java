@@ -15,12 +15,25 @@ public class TrafficLightController extends JPanel  {
 
     private TrafficLightModel model;
     private TrafficLightView view;
+    private CommPort port;
+
     public TrafficLightController(TrafficLightModel model, TrafficLightView view) {
         super(new BorderLayout());
 
         this.model = model;
         this.view = view;
         initGui();
+        initComm();
+    }
+
+    private void initComm() {
+        List<String> ports = CommPortSelector.get().listPorts();
+        Optional<String> first = ports.stream()
+                .filter(name -> name.contains("USB")).findFirst();
+        first.ifPresent(name -> {
+            System.out.println("Found port " + name);
+            this.port = CommPortSelector.get().select(name);
+        });
     }
 
     private void initGui() {
@@ -72,13 +85,6 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void handleSendAction(ActionEvent event) {
-        List<String> ports = CommPortSelector.get().listPorts();
-        Optional<String> first = ports.stream()
-                .filter(name -> name.contains("USB")).findFirst();
-        first.ifPresent(name -> {
-            System.out.println("Found port " + name);
-            CommPort port = CommPortSelector.get().select(name);
-            port.send("hello 2023");
-        });
+        port.send("hello 2023");
     }
 }
