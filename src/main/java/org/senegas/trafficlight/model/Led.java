@@ -5,13 +5,13 @@ import java.awt.*;
 public class Led implements Switchable {
     private final Color color;
     private boolean isOn;
-    private long delay;
+    private int delay;
 
     Led(Color c) {
         this(c, false, 0);
     }
 
-    Led(Color c, boolean isOn, long delay) {
+    Led(Color c, boolean isOn, int delay) {
         this.color = c;
         this.isOn = isOn;
         this.delay = delay;
@@ -33,11 +33,11 @@ public class Led implements Switchable {
         return isOn;
     }
 
-    public long getDelay() {
+    public int getDelay() {
         return delay;
     }
 
-    public void setDelay(long delay) {
+    public void setDelay(int delay) {
         this.delay = delay;
     }
 

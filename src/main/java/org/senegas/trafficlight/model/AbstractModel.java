@@ -20,4 +20,12 @@ public abstract class AbstractModel {
     protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
         this.propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
+
+    protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+        this.propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    protected void firePropertyChange(String propertyName, int oldValue, int newValue) {
+        this.propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
 }
