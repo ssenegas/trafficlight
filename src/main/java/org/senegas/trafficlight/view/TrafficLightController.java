@@ -19,10 +19,9 @@ public class TrafficLightController extends JPanel  {
     private final TrafficLightModel model;
     private final TrafficLightView view;
     private CommPort port;
-
-    JSpinner redSpinner;
-    JSpinner amberSpinner;
-    JSpinner greenSpinner;
+    private JSpinner redSpinner;
+    private JSpinner amberSpinner;
+    private JSpinner greenSpinner;
 
     public TrafficLightController(TrafficLightModel model, TrafficLightView view) {
         super(new BorderLayout());
