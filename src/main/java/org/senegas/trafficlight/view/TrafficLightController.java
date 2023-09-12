@@ -3,16 +3,14 @@ package org.senegas.trafficlight.view;
 import net.miginfocom.swing.MigLayout;
 import org.senegas.trafficlight.model.TrafficLightModel;
 import org.senegas.trafficlight.serial.CommPort;
+import org.senegas.trafficlight.serial.CommPortException;
 import org.senegas.trafficlight.serial.CommPortSelector;
-import org.senegas.trafficlight.serial.ICommPortConfig;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.util.List;
-import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -40,15 +38,10 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void initSerialPort() {
-        List<String> ports = CommPortSelector.get().listPorts();
-        Optional<String> first = ports.stream()
-                .filter(ICommPortConfig.PORT_NAME::equals).findFirst();
-        first.ifPresent(name -> {
-            System.out.println("Found port " + name);
-            port = CommPortSelector.get().select(name);
-        });
-        if (port == null) {
-            System.err.println("Could not find port [" + ICommPortConfig.PORT_NAME + "]");
+        try {
+            port = CommPortSelector.get().select();
+        } catch (CommPortException e) {
+            System.err.println(e);
         }
     }
 
