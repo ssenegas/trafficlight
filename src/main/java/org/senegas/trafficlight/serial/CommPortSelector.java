@@ -49,12 +49,12 @@ public class CommPortSelector {
 
         if (opt.isEmpty()) {
             dumpPorts();
-            throw new CommPortException("Could not found a connected Arduino");
+            throw new CommPortException("Could not find a connected Arduino");
         }
 
         SerialPort port = opt.get();
 
-        System.out.println("Selected port [" + port.getSystemPortName()+ "]");
+        System.out.println("Detected Arduino connected on port [" + port.getSystemPortName()+ "]");
         return new CommPort(port);
     }
 
