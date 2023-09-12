@@ -15,9 +15,8 @@ public class CommPort {
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Closing port " + jSerialPort.getSystemPortPath()+"] ...");
-            boolean b = jSerialPort.closePort();
-            System.out.println("Closed port: " + b);
+            System.out.println("Closing port " + jSerialPort.getDescriptivePortName());
+            jSerialPort.closePort();
         }));
 
         port.setBaudRate(ICommPortConfig.BAUD_RATE);

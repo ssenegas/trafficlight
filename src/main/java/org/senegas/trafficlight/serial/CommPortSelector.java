@@ -4,7 +4,6 @@ import com.fazecast.jSerialComm.SerialPort;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CommPortSelector {
@@ -20,41 +19,32 @@ public class CommPortSelector {
         return INSTANCE;
     }
 
-    void dumpPorts() {
+    public List<String> listPorts() {
         SerialPort[] ports = SerialPort.getCommPorts();
         List<SerialPort> list = Arrays.asList(ports);
 
-        System.err.println(list.size()+" ports found:");
+        System.out.println(list.size()+" ports found:");
 
         for (SerialPort port : list) {
-            System.err.println("["+port.getSystemPortName()
+            System.out.println("["+port.getSystemPortName()
                     + "][" + port.getDescriptivePortName()
                     + "][" + port.getSystemPortPath()
                     + "][" + port.getPortLocation() + "]"
             );
         }
+
+        return list.stream()
+                .map(SerialPort::getSystemPortName)
+                .collect(Collectors.toList());
     }
 
-    public CommPort select() throws CommPortException {
+    public CommPort select(String portName) {
 
-        SerialPort[] ports = SerialPort.getCommPorts();
-
-        Optional<SerialPort> opt = Arrays.stream(ports)
-                .filter(port -> port.getDescriptivePortName().contains("CH340")).findFirst();
-
-        if (opt.isEmpty()) {
-            opt = Arrays.stream(ports)
-                    .filter(p -> p.getDescriptivePortName().contains("USB")).findFirst();
+        SerialPort port = SerialPort.getCommPort(portName);
+        if (port==null) {
+            throw new RuntimeException("Invalid port name: ["+portName+"]");
         }
-
-        if (opt.isEmpty()) {
-            dumpPorts();
-            throw new CommPortException("Could not found a connected Arduino");
-        }
-
-        SerialPort port = opt.get();
-
-        System.out.println("Selected port [" + port.getSystemPortName()+ "]");
+        System.out.println("Selected port: " + portName);
         return new CommPort(port);
     }
 
