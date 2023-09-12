@@ -11,7 +11,7 @@ class TrafficLightModelTest {
     static final private MessageFormat form = new MessageFormat("Green:{0}, Yellow:{1}, Red:{2}");
 
     @Test
-    void givenInputToMakeShouldCreateModelWithLedTrulyInitialized() {
+    void givenInputToParseShouldCreateModelWithLedTrulyInitialized() {
         // given
         String[] values = { "On", "Off", "On" };
 
@@ -22,5 +22,18 @@ class TrafficLightModelTest {
         assertTrue(model.isRedOn());
         assertFalse(model.isAmberOn());
         assertTrue(model.isGreenOn());
+    }
+
+    @Test
+    void givenIllegalInputToParseShouldThrowException() {
+        String[] values = { "foo", "bar", "baz" };
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                TrafficLightModel.parse(form.format(values)));
+
+        String expectedMessage = "Given argument does not match";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 }
