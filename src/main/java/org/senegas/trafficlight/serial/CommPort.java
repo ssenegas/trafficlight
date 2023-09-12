@@ -19,7 +19,7 @@ public class CommPort {
             jSerialPort.closePort();
         }));
 
-        port.setBaudRate(9600);
+        port.setBaudRate(ICommPortConfig.BAUD_RATE);
     }
 
     public void send(String msg) {
