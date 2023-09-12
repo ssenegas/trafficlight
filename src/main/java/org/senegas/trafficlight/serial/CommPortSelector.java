@@ -21,7 +21,19 @@ public class CommPortSelector {
 
     public List<String> listPorts() {
         SerialPort[] ports = SerialPort.getCommPorts();
-        return Arrays.stream(ports)
+        List<SerialPort> list = Arrays.asList(ports);
+
+        System.out.println(list.size()+" ports found:");
+
+        for (SerialPort port : list) {
+            System.out.println("["+port.getSystemPortName()
+                    + "][" + port.getDescriptivePortName()
+                    + "][" + port.getSystemPortPath()
+                    + "][" + port.getPortLocation() + "]"
+            );
+        }
+
+        return list.stream()
                 .map(SerialPort::getSystemPortName)
                 .collect(Collectors.toList());
     }
@@ -32,6 +44,7 @@ public class CommPortSelector {
         if (port==null) {
             throw new RuntimeException("Invalid port name: ["+portName+"]");
         }
+        System.out.println("Selected port: " + portName);
         return new CommPort(port);
     }
 
