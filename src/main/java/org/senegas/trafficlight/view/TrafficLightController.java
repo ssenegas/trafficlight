@@ -1,6 +1,7 @@
 package org.senegas.trafficlight.view;
 
 import net.miginfocom.swing.MigLayout;
+import org.senegas.trafficlight.model.TrafficLight;
 import org.senegas.trafficlight.model.TrafficLightModel;
 
 import javax.swing.*;
@@ -8,6 +9,7 @@ import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.text.MessageFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -97,6 +99,10 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void handleTestAction(ActionEvent event) {
+        final MessageFormat form = new MessageFormat("Green:{0}, Yellow:{1}, Red:{2}");
+        String[] values = { "On", "Off", "On" };
+        TrafficLight trafficLight = TrafficLight.parse(form.format(values));
+        model.setTrafficLight(trafficLight);
     }
 
     private JToggleButton addLabeledToggleButton(Container c, String label) {

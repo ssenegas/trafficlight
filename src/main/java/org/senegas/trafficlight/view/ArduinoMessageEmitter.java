@@ -8,12 +8,11 @@ import org.senegas.trafficlight.serial.CommPortSelector;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-public class ArduinoCommandEmitter  implements PropertyChangeListener {
-
+public class ArduinoMessageEmitter implements PropertyChangeListener {
     private TrafficLightModel model;
     private CommPort port;
 
-    public ArduinoCommandEmitter(TrafficLightModel model) {
+    public ArduinoMessageEmitter(TrafficLightModel model) {
         this.model = model;
         initSerialPort();
     }
