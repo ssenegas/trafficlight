@@ -11,11 +11,7 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class TrafficLightModel extends AbstractModel implements Serializable {
-
     Map<Color, Led> leds = new HashMap<>();
-    private final Led red = new Led(Color.RED);
-    private final Led amber = new Led(Color.YELLOW);
-    private final Led green = new Led(Color.GREEN);
 
     public static TrafficLightModel parse(String input) {
         final Pattern p = Pattern.compile("Green:(On|Off|Blinking), Yellow:(On|Off|Blinking), Red:(On|Off|Blinking)");
