@@ -6,7 +6,7 @@ import java.text.MessageFormat;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TrafficLightModelTest {
+class TrafficLightTest {
 
     static final private MessageFormat form = new MessageFormat("Green:{0}, Yellow:{1}, Red:{2}");
 
@@ -16,12 +16,12 @@ class TrafficLightModelTest {
         String[] values = { "On", "Off", "On" };
 
         //when
-        TrafficLightModel model = TrafficLightModel.parse(form.format(values));
+        TrafficLight trafficLight = TrafficLight.parse(form.format(values));
 
         //then
-        assertTrue(model.isRedOn());
-        assertFalse(model.isAmberOn());
-        assertTrue(model.isGreenOn());
+        assertTrue(trafficLight.isRedOn());
+        assertFalse(trafficLight.isAmberOn());
+        assertTrue(trafficLight.isGreenOn());
     }
 
     @Test
@@ -29,7 +29,7 @@ class TrafficLightModelTest {
         String[] values = { "foo", "bar", "baz" };
 
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
-                TrafficLightModel.parse(form.format(values)));
+                TrafficLight.parse(form.format(values)));
 
         String expectedMessage = "Given argument does not match";
         String actualMessage = exception.getMessage();

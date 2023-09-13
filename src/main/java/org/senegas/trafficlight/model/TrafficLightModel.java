@@ -1,139 +1,94 @@
 package org.senegas.trafficlight.model;
 
-import java.awt.*;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 public class TrafficLightModel extends AbstractModel implements Serializable {
-    Map<Color, Led> leds = new HashMap<>();
-
-    public static TrafficLightModel parse(String input) {
-        final Pattern p = Pattern.compile("Green:(On|Off|Blinking), Yellow:(On|Off|Blinking), Red:(On|Off|Blinking)");
-        final Matcher m = p.matcher(input);
-        if (m.find()) {
-            Map<Color, Integer> map = Map.of(Color.GREEN, 1, Color.YELLOW, 2, Color.RED, 3);
-
-            Function<Map.Entry<Color, Integer>, Led> toLed = e -> {
-                boolean isOn = false;
-                int delay = 0;
-                if (m.group(e.getValue()).equals("Blinking")) {
-                    delay = 1_000;
-                } else {
-                    isOn = m.group(e.getValue()).equals("On");
-                }
-                return new Led(e.getKey(), isOn, delay);
-            };
-
-            List<Led> leds =
-            map.entrySet().stream()
-                    .map(toLed)
-                    .collect(Collectors.toList());
-
-            return new TrafficLightModel(leds);
-        }
-        throw new IllegalArgumentException("Given argument does not match to the expected format");
-    }
+    private TrafficLight trafficLight = new TrafficLight();
 
     public TrafficLightModel() {
-        this(List.of(new Led(Color.RED), new Led(Color.YELLOW), new Led(Color.GREEN)));
     }
 
-    // package-private to prevent explicit instantiation
-    TrafficLightModel(List<Led> list) {
-        for (Led l: list) {
-            this.leds.put(l.getColor(), l);
-        }
+    public void setTrafficLight(TrafficLight trafficLight) {
+        final TrafficLight oldTrafficLight = this.trafficLight;
+        this.trafficLight = trafficLight;
+        firePropertyChange("traffic-light", oldTrafficLight, this.trafficLight);
     }
 
     public void turnOnRed() {
-        turnOn(this.leds.get(Color.RED));
+        boolean oldValue = trafficLight.isRedOn();
+        trafficLight.turnOnRed();
+        firePropertyChange("turnOn", oldValue, trafficLight.isRedOn());
     }
 
     public void turnOnAmber() {
-        turnOn(this.leds.get(Color.YELLOW));
+        boolean oldValue = trafficLight.isAmberOn();
+        trafficLight.turnOnAmber();
+        firePropertyChange("turnOn", oldValue, trafficLight.isAmberOn());
     }
 
     public void turnOnGreen() {
-        turnOn(this.leds.get(Color.GREEN));
-    }
-
-    private void turnOn(Led l) {
-        boolean oldValue = l.isOn();
-        l.turnOn();
-        firePropertyChange("turnOn", oldValue, l.isOn());
+        boolean oldValue = trafficLight.isGreenOn();
+        trafficLight.turnOnGreen();
+        firePropertyChange("turnOn", oldValue, trafficLight.isGreenOn());
     }
 
     public void turnOffRed() {
-        turnOff(this.leds.get(Color.RED));
+        boolean oldValue = trafficLight.isRedOn();
+        trafficLight.turnOffRed();
+        firePropertyChange("turnOff", oldValue, trafficLight.isRedOn());
     }
 
     public void turnOffAmber() {
-        turnOff(this.leds.get(Color.YELLOW));
+        boolean oldValue = trafficLight.isAmberOn();
+        trafficLight.turnOffAmber();
+        firePropertyChange("turnOff", oldValue, trafficLight.isAmberOn());
     }
 
     public void turnOffGreen() {
-        turnOff(this.leds.get(Color.GREEN));
-    }
-
-    private void turnOff(Led l) {
-        boolean oldValue = l.isOn();
-        l.turnOff();
-        firePropertyChange("turnOff", oldValue, l.isOn());
+        boolean oldValue = trafficLight.isGreenOn();
+        trafficLight.turnOffGreen();
+        firePropertyChange("turnOff", oldValue, trafficLight.isGreenOn());
     }
 
     public void setRedDelay(int value) {
-        setDelay(this.leds.get(Color.RED), value);
+        int oldValue = trafficLight.getRedDelay();
+        trafficLight.setRedDelay(value);
+        firePropertyChange("delay", oldValue, trafficLight.getRedDelay());
     }
 
     public void setAmberDelay(int value) {
-        setDelay(this.leds.get(Color.YELLOW), value);
+        int oldValue = trafficLight.getAmberDelay();
+        trafficLight.setAmberDelay(value);
+        firePropertyChange("delay", oldValue, trafficLight.getAmberDelay());
     }
 
     public void setGreenDelay(int value) {
-        setDelay(this.leds.get(Color.GREEN), value);
-    }
-
-    private void setDelay(Led l, int value) {
-        int oldValue = l.getDelay();
-        l.setDelay(value);
-        firePropertyChange("delay", oldValue, l.getDelay());
+        int oldValue = trafficLight.getGreenDelay();
+        trafficLight.setGreenDelay(value);
+        firePropertyChange("delay", oldValue, trafficLight.getGreenDelay());
     }
 
     public boolean isRedOn() {
-        return isOn(this.leds.get(Color.RED));
+        return trafficLight.isRedOn();
     }
 
     public boolean isAmberOn() {
-        return isOn(this.leds.get(Color.YELLOW));
+        return trafficLight.isAmberOn();
     }
 
     public boolean isGreenOn() {
-        return isOn(this.leds.get(Color.GREEN));
+        return trafficLight.isGreenOn();
     }
 
     public int getRedDelay() {
-        return getDelay(this.leds.get(Color.RED));
+        return trafficLight.getRedDelay();
     }
 
     public int getAmberDelay() {
-        return getDelay(this.leds.get(Color.YELLOW));
+        return trafficLight.getAmberDelay();
     }
 
     public int getGreenDelay() {
-        return getDelay(this.leds.get(Color.GREEN));
-    }
-
-    private boolean isOn(Led c) {
-        return c.isOn();
-    }
-
-    private int getDelay(Led c) {
-        return c.getDelay();
+        return trafficLight.getGreenDelay();
     }
 }
