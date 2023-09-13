@@ -2,9 +2,6 @@ package org.senegas.trafficlight.view;
 
 import net.miginfocom.swing.MigLayout;
 import org.senegas.trafficlight.model.TrafficLightModel;
-import org.senegas.trafficlight.serial.CommPort;
-import org.senegas.trafficlight.serial.CommPortException;
-import org.senegas.trafficlight.serial.CommPortSelector;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -17,9 +14,8 @@ import java.util.TimerTask;
 public class TrafficLightController extends JPanel  {
     private final TrafficLightModel model;
     private final TrafficLightView view;
-    private CommPort port;
     private JSpinner redSpinner;
-    private JSpinner amberSpinner;
+    private JSpinner YellowSpinner;
     private JSpinner greenSpinner;
 
     public TrafficLightController(TrafficLightModel model, TrafficLightView view) {
@@ -27,7 +23,6 @@ public class TrafficLightController extends JPanel  {
         this.model = model;
         this.view = view;
         initGui();
-        initSerialPort();
         initTimer();
     }
 
@@ -37,32 +32,24 @@ public class TrafficLightController extends JPanel  {
         timer.scheduleAtFixedRate(task, 0, 1_000);
     }
 
-    private void initSerialPort() {
-        try {
-            port = CommPortSelector.get().select();
-        } catch (CommPortException e) {
-            System.err.println(e);
-        }
-    }
-
     private void initGui() {
         final JPanel actionPanel = new JPanel(new MigLayout());
         final JToggleButton redButton = addLabeledToggleButton(actionPanel, "Red");
         redSpinner = addSpinner(actionPanel);
-        final JToggleButton amberButton = addLabeledToggleButton(actionPanel, "Amber");
-        amberSpinner = addSpinner(actionPanel);
+        final JToggleButton YellowButton = addLabeledToggleButton(actionPanel, "Yellow");
+        YellowSpinner = addSpinner(actionPanel);
         final JToggleButton greenButton = addLabeledToggleButton(actionPanel, "Green");
         greenSpinner = addSpinner(actionPanel);
-        final JButton send = new JButton("Send");
-        actionPanel.add(send, "grow");
+        final JButton test = new JButton("Test");
+        actionPanel.add(test, "grow");
 
         redButton.addItemListener(this::handleRedItemAction);
         redSpinner.addChangeListener(this::handleRedDelayChange);
-        amberButton.addItemListener(this::handleAmberItemAction);
-        amberSpinner.addChangeListener(this::handleAmberDelayChange);
+        YellowButton.addItemListener(this::handleYellowItemAction);
+        YellowSpinner.addChangeListener(this::handleYellowDelayChange);
         greenButton.addItemListener(this::handleGreenItemAction);
         greenSpinner.addChangeListener(this::handleGreenDelayChange);
-        send.addActionListener(this::handleSendAction);
+        test.addActionListener(this::handleTestAction);
 
         this.add(actionPanel, BorderLayout.CENTER);
     }
@@ -81,18 +68,18 @@ public class TrafficLightController extends JPanel  {
         this.model.setRedDelay((Integer) spinnerModel.getValue());
     }
 
-    private void handleAmberItemAction(ItemEvent itemEvent) {
+    private void handleYellowItemAction(ItemEvent itemEvent) {
         int state = itemEvent.getStateChange();
         if (state == ItemEvent.SELECTED) {
-            model.turnOnAmber();
+            model.turnOnYellow();
         } else {
-            model.turnOffAmber();
+            model.turnOffYellow();
         }
     }
 
-    private void handleAmberDelayChange(ChangeEvent changeEvent) {
-        SpinnerModel spinnerModel = amberSpinner.getModel();
-        this.model.setAmberDelay((Integer) spinnerModel.getValue());
+    private void handleYellowDelayChange(ChangeEvent changeEvent) {
+        SpinnerModel spinnerModel = YellowSpinner.getModel();
+        this.model.setYellowDelay((Integer) spinnerModel.getValue());
     }
 
     private void handleGreenItemAction(ItemEvent itemEvent) {
@@ -109,11 +96,7 @@ public class TrafficLightController extends JPanel  {
         this.model.setGreenDelay((Integer) spinnerModel.getValue());
     }
 
-    private void handleSendAction(ActionEvent event) {
-        String msg = (model.isRedOn() ? "R" : "r") +
-                (model.isAmberOn() ? "A" : "a") +
-                (model.isGreenOn() ? "G" : "g");
-        port.send(msg);
+    private void handleTestAction(ActionEvent event) {
     }
 
     private JToggleButton addLabeledToggleButton(Container c, String label) {

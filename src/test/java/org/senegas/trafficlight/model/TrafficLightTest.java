@@ -20,7 +20,7 @@ class TrafficLightTest {
 
         //then
         assertTrue(trafficLight.isRedOn());
-        assertFalse(trafficLight.isAmberOn());
+        assertFalse(trafficLight.isYellowOn());
         assertTrue(trafficLight.isGreenOn());
     }
 

@@ -14,16 +14,20 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
         firePropertyChange("traffic-light", oldTrafficLight, this.trafficLight);
     }
 
+    public String toArduinoCommand() {
+        return this.trafficLight.toArduinoCommand();
+    }
+
     public void turnOnRed() {
         boolean oldValue = trafficLight.isRedOn();
         trafficLight.turnOnRed();
         firePropertyChange("turnOn", oldValue, trafficLight.isRedOn());
     }
 
-    public void turnOnAmber() {
-        boolean oldValue = trafficLight.isAmberOn();
-        trafficLight.turnOnAmber();
-        firePropertyChange("turnOn", oldValue, trafficLight.isAmberOn());
+    public void turnOnYellow() {
+        boolean oldValue = trafficLight.isYellowOn();
+        trafficLight.turnOnYellow();
+        firePropertyChange("turnOn", oldValue, trafficLight.isYellowOn());
     }
 
     public void turnOnGreen() {
@@ -38,10 +42,10 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
         firePropertyChange("turnOff", oldValue, trafficLight.isRedOn());
     }
 
-    public void turnOffAmber() {
-        boolean oldValue = trafficLight.isAmberOn();
-        trafficLight.turnOffAmber();
-        firePropertyChange("turnOff", oldValue, trafficLight.isAmberOn());
+    public void turnOffYellow() {
+        boolean oldValue = trafficLight.isYellowOn();
+        trafficLight.turnOffYellow();
+        firePropertyChange("turnOff", oldValue, trafficLight.isYellowOn());
     }
 
     public void turnOffGreen() {
@@ -56,10 +60,10 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
         firePropertyChange("delay", oldValue, trafficLight.getRedDelay());
     }
 
-    public void setAmberDelay(int value) {
-        int oldValue = trafficLight.getAmberDelay();
-        trafficLight.setAmberDelay(value);
-        firePropertyChange("delay", oldValue, trafficLight.getAmberDelay());
+    public void setYellowDelay(int value) {
+        int oldValue = trafficLight.getYellowDelay();
+        trafficLight.setYellowDelay(value);
+        firePropertyChange("delay", oldValue, trafficLight.getYellowDelay());
     }
 
     public void setGreenDelay(int value) {
@@ -72,8 +76,8 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
         return trafficLight.isRedOn();
     }
 
-    public boolean isAmberOn() {
-        return trafficLight.isAmberOn();
+    public boolean isYellowOn() {
+        return trafficLight.isYellowOn();
     }
 
     public boolean isGreenOn() {
@@ -84,8 +88,8 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
         return trafficLight.getRedDelay();
     }
 
-    public int getAmberDelay() {
-        return trafficLight.getAmberDelay();
+    public int getYellowDelay() {
+        return trafficLight.getYellowDelay();
     }
 
     public int getGreenDelay() {

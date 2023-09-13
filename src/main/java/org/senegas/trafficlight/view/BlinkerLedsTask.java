@@ -23,7 +23,7 @@ class BlinkerLedsTask extends TimerTask {
 
     private void toggleLeds() {
         toggleRed();
-        toggleAmber();
+        toggleYellow();
         toggleGreen();
     }
 
@@ -37,12 +37,12 @@ class BlinkerLedsTask extends TimerTask {
         }
     }
 
-    private void toggleAmber() {
-        if (model.getAmberDelay() > 0) {
-            if (model.isAmberOn()) {
-                model.turnOffAmber();
+    private void toggleYellow() {
+        if (model.getYellowDelay() > 0) {
+            if (model.isYellowOn()) {
+                model.turnOffYellow();
             } else {
-                model.turnOnAmber();
+                model.turnOnYellow();
             }
         }
     }

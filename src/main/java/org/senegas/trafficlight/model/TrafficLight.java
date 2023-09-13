@@ -50,11 +50,17 @@ public class TrafficLight {
         }
     }
 
+    public String toArduinoCommand() {
+        return (isRedOn() ? "R" : "r") +
+                (isYellowOn() ? "A" : "a") +
+                (isGreenOn() ? "G" : "g");
+    }
+
     public void turnOnRed() {
         turnOn(this.leds.get(Color.RED));
     }
 
-    public void turnOnAmber() {
+    public void turnOnYellow() {
         turnOn(this.leds.get(Color.YELLOW));
     }
 
@@ -66,7 +72,7 @@ public class TrafficLight {
         turnOff(this.leds.get(Color.RED));
     }
 
-    public void turnOffAmber() {
+    public void turnOffYellow() {
         turnOff(this.leds.get(Color.YELLOW));
     }
 
@@ -78,7 +84,7 @@ public class TrafficLight {
         return isOn(this.leds.get(Color.RED));
     }
 
-    public boolean isAmberOn() {
+    public boolean isYellowOn() {
         return isOn(this.leds.get(Color.YELLOW));
     }
 
@@ -90,7 +96,7 @@ public class TrafficLight {
         return getDelay(this.leds.get(Color.RED));
     }
 
-    public int getAmberDelay() {
+    public int getYellowDelay() {
         return getDelay(this.leds.get(Color.YELLOW));
     }
 
@@ -102,7 +108,7 @@ public class TrafficLight {
         setDelay(this.leds.get(Color.RED), value);
     }
 
-    public void setAmberDelay(int value) {
+    public void setYellowDelay(int value) {
         setDelay(this.leds.get(Color.YELLOW), value);
     }
 
