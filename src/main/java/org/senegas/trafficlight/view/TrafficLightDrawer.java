@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
 public class TrafficLightDrawer {
-    TrafficLightModel model;
+    private TrafficLightModel model;
 
     public TrafficLightDrawer(TrafficLightModel model) {
         this.model = model;
@@ -24,6 +24,10 @@ public class TrafficLightDrawer {
         double x = xLeft + gap;
         double w = width - 2 * gap;
         double h = w;
+
+        if (this.model == null) {
+            return;
+        }
 
         Ellipse2D.Double redBulb = new Ellipse2D.Double(x, yTop + gap, w, h);
         g2.setColor(model.isRedOn() ? Color.RED : Color.GRAY);

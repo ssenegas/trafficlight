@@ -7,9 +7,12 @@ import java.awt.*;
 
 public class TrafficLightComponent extends JComponent {
 
-    TrafficLightModel model;
+    private TrafficLightModel model;
 
-    public TrafficLightComponent(TrafficLightModel model) {
+    public TrafficLightComponent() {
+    }
+
+    public void setModel(TrafficLightModel model) {
         this.model = model;
     }
 

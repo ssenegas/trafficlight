@@ -11,12 +11,12 @@ public class TrafficLightPanel extends JPanel {
         super(new BorderLayout());
 
         final TrafficLightModel model = new TrafficLightModel();
-        final TrafficLightView view = new TrafficLightView(model);
-        final ArduinoMessageEmitter anotherView = new ArduinoMessageEmitter(model);
+        final TrafficLightView view = new TrafficLightView();
+        final ArduinoMessageEmitter anotherView = new ArduinoMessageEmitter();
         final TrafficLightController controller = new TrafficLightController(model, view);
 
-        model.addPropertyChangeListener(view);
-        model.addPropertyChangeListener(anotherView);
+        view.setModel(model);
+        anotherView.setModel(model);
 
         this.add(view, BorderLayout.EAST);
         this.add(controller, BorderLayout.CENTER);

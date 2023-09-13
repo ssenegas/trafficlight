@@ -12,9 +12,17 @@ public class ArduinoMessageEmitter implements PropertyChangeListener {
     private TrafficLightModel model;
     private CommPort port;
 
-    public ArduinoMessageEmitter(TrafficLightModel model) {
-        this.model = model;
+    public ArduinoMessageEmitter() {
         initSerialPort();
+    }
+
+    public void setModel(TrafficLightModel model) {
+        this.model = model;
+        if (this.model != null) {
+            this.model.addPropertyChangeListener(this);
+        } else {
+            throw new NullPointerException("Given model is null");
+        }
     }
 
     @Override

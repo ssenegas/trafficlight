@@ -9,10 +9,22 @@ import java.beans.PropertyChangeListener;
 
 public class TrafficLightView extends JPanel implements PropertyChangeListener  {
 
-    public TrafficLightView(TrafficLightModel model) {
+    private TrafficLightModel model;
+    TrafficLightComponent trafficLightComponent = new TrafficLightComponent();
+
+    public TrafficLightView() {
         super(new BorderLayout());
-        TrafficLightComponent trafficLight = new TrafficLightComponent(model);
-        this.add(trafficLight);
+        this.add(trafficLightComponent);
+    }
+
+    public void setModel(TrafficLightModel model) {
+        this.model = model;
+        if (this.model != null) {
+            this.model.addPropertyChangeListener(this);
+            trafficLightComponent.setModel(this.model);
+        } else {
+            throw new NullPointerException("Given model is null");
+        }
     }
 
     @Override
