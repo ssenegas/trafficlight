@@ -52,8 +52,11 @@ public class TrafficLight {
 
     public String toArduinoCommand() {
         return (isRedOn() ? "R" : "r") +
-                (isYellowOn() ? "A" : "a") +
-                (isGreenOn() ? "G" : "g");
+                String.format("%04d", getRedDelay()) +
+                (isYellowOn() ? "Y" : "y") +
+                String.format("%04d", getYellowDelay()) +
+                (isGreenOn() ? "G" : "g") +
+                String.format("%04d", getGreenDelay());
     }
 
     public void turnOnRed() {

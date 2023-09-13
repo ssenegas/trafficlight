@@ -9,6 +9,12 @@ import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -101,8 +107,31 @@ public class TrafficLightController extends JPanel  {
     private void handleTestAction(ActionEvent event) {
         final MessageFormat form = new MessageFormat("Green:{0}, Yellow:{1}, Red:{2}");
         String[] values = { "On", "Off", "On" };
-        TrafficLight trafficLight = TrafficLight.parse(form.format(values));
-        model.setTrafficLight(trafficLight);
+
+        URL url = null;
+        try {
+            url = new URL("http://localhost:8080/examples/light.txt");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            int status = con.getResponseCode();
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer content = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            in.close();
+            con.disconnect();
+            System.out.println(content);
+
+            TrafficLight trafficLight = TrafficLight.parse(content.toString());
+            model.setTrafficLight(trafficLight);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private JToggleButton addLabeledToggleButton(Container c, String label) {
@@ -117,8 +146,8 @@ public class TrafficLightController extends JPanel  {
     private JSpinner addSpinner(Container c) {
         SpinnerModel model = new SpinnerNumberModel(0,
                 0,
-                1000,
-                1000);
+                5000,
+                500);
         JSpinner spinner = new JSpinner(model);
         c.add(spinner);
         c.add(new JLabel("ms"), "wrap");

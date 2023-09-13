@@ -15,6 +15,8 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
     }
 
     public String toArduinoCommand() {
+        System.out.println("Command to send :" + this.trafficLight.toArduinoCommand());
+        System.out.println("Length : " + this.trafficLight.toArduinoCommand().length());
         return this.trafficLight.toArduinoCommand();
     }
 
