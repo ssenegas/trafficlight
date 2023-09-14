@@ -1,8 +1,13 @@
 plugins {
-    id 'java'
+    id 'application'
 }
 
-group = 'org.example'
+application {
+    // Define the main class for the application.
+    mainClass = 'org.senegas.trafficlight.TrafficLightApp'
+}
+
+group = 'org.senegas'
 version = '1.0-SNAPSHOT'
 
 repositories {

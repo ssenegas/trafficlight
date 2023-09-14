@@ -8,7 +8,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class TrafficLightView extends JPanel implements PropertyChangeListener  {
-
     private TrafficLightModel model;
     private final TrafficLightComponent trafficLightComponent = new TrafficLightComponent();
 
@@ -30,7 +29,6 @@ public class TrafficLightView extends JPanel implements PropertyChangeListener  
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawDebugFrame(g);
     }
 
     @Override

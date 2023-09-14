@@ -12,7 +12,7 @@ public class TrafficLightPanel extends JPanel {
 
         final TrafficLightModel model = new TrafficLightModel();
         final TrafficLightView view = new TrafficLightView();
-        final ArduinoMessageEmitter anotherView = new ArduinoMessageEmitter();
+        final SerialMessageEmitter anotherView = new SerialMessageEmitter();
         final TrafficLightController controller = new TrafficLightController(model, view);
 
         view.setModel(model);
