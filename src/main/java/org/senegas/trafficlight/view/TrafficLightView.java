@@ -10,7 +10,7 @@ import java.beans.PropertyChangeListener;
 public class TrafficLightView extends JPanel implements PropertyChangeListener  {
 
     private TrafficLightModel model;
-    private TrafficLightComponent trafficLightComponent = new TrafficLightComponent();
+    private final TrafficLightComponent trafficLightComponent = new TrafficLightComponent();
 
     public TrafficLightView() {
         super(new BorderLayout());
@@ -30,7 +30,7 @@ public class TrafficLightView extends JPanel implements PropertyChangeListener  
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawFrame(g);
+        drawDebugFrame(g);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class TrafficLightView extends JPanel implements PropertyChangeListener  
         repaint();
     }
 
-    private void drawFrame(Graphics g) {
+    private void drawDebugFrame(Graphics g) {
         final Graphics2D g2 = (Graphics2D) g;
         Dimension size = this.getSize();
         g2.setColor(Color.MAGENTA);
