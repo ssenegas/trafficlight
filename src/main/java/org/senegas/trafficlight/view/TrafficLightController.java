@@ -8,17 +8,17 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class TrafficLightController extends JPanel  {
     private final TrafficLightModel model;
     private final TrafficLightView view;
+    private Properties appProps = new Properties();
     private JToggleButton redButton;
     private JToggleButton yellowButton;
     private JToggleButton greenButton;
@@ -31,6 +31,7 @@ public class TrafficLightController extends JPanel  {
         this.model = model;
         this.view = view;
         initGui();
+        loadAppProperties();
         startTimer();
     }
 
@@ -103,7 +104,7 @@ public class TrafficLightController extends JPanel  {
 
     private void pollLightsURL() {
         try {
-            URL url = new URL("http://localhost:8080/examples/light.txt");
+            URL url = new URL(appProps.getProperty("lightsURL"));
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
@@ -124,6 +125,15 @@ public class TrafficLightController extends JPanel  {
             model.setTrafficLight(trafficLight);
 
             synchronizeGUIToModel();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void loadAppProperties() {
+        try (InputStream resourceAsStream = TrafficLightController.class.getClassLoader()
+                .getResourceAsStream("app.properties")) {
+            appProps.load(resourceAsStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
