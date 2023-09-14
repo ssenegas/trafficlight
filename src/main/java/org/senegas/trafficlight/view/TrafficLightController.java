@@ -8,7 +8,10 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Properties;
@@ -18,7 +21,7 @@ import java.util.TimerTask;
 public class TrafficLightController extends JPanel  {
     private final TrafficLightModel model;
     private final TrafficLightView view;
-    private Properties appProps = new Properties();
+    private final Properties appProps = new Properties();
     private JToggleButton redButton;
     private JToggleButton yellowButton;
     private JToggleButton greenButton;
@@ -43,19 +46,19 @@ public class TrafficLightController extends JPanel  {
 
     private void initGui() {
         final JPanel actionPanel = new JPanel(new MigLayout());
-        redButton = addLabeledToggleButton(actionPanel, "Red");
-        redSpinner = addSpinner(actionPanel);
-        yellowButton = addLabeledToggleButton(actionPanel, "Yellow");
-        YellowSpinner = addSpinner(actionPanel);
-        greenButton = addLabeledToggleButton(actionPanel, "Green");
-        greenSpinner = addSpinner(actionPanel);
+        this.redButton = addLabeledToggleButton(actionPanel, "Red");
+        this.redSpinner = addSpinner(actionPanel);
+        this.yellowButton = addLabeledToggleButton(actionPanel, "Yellow");
+        this.YellowSpinner = addSpinner(actionPanel);
+        this.greenButton = addLabeledToggleButton(actionPanel, "Green");
+        this.greenSpinner = addSpinner(actionPanel);
 
-        redButton.addItemListener(this::handleRedItemAction);
-        redSpinner.addChangeListener(this::handleRedDelayChange);
-        yellowButton.addItemListener(this::handleYellowItemAction);
-        YellowSpinner.addChangeListener(this::handleYellowDelayChange);
-        greenButton.addItemListener(this::handleGreenItemAction);
-        greenSpinner.addChangeListener(this::handleGreenDelayChange);
+        this.redButton.addItemListener(this::handleRedItemAction);
+        this.redSpinner.addChangeListener(this::handleRedDelayChange);
+        this.yellowButton.addItemListener(this::handleYellowItemAction);
+        this.YellowSpinner.addChangeListener(this::handleYellowDelayChange);
+        this.greenButton.addItemListener(this::handleGreenItemAction);
+        this.greenSpinner.addChangeListener(this::handleGreenDelayChange);
 
         this.add(actionPanel, BorderLayout.CENTER);
     }
@@ -63,42 +66,42 @@ public class TrafficLightController extends JPanel  {
     private void handleRedItemAction(ItemEvent itemEvent) {
         int state = itemEvent.getStateChange();
         if (state == ItemEvent.SELECTED) {
-            model.turnOnRed();
+            this.model.turnOnRed();
         } else {
-            model.turnOffRed();
+            this.model.turnOffRed();
         }
     }
 
     private void handleRedDelayChange(ChangeEvent changeEvent) {
-        SpinnerModel spinnerModel = redSpinner.getModel();
+        SpinnerModel spinnerModel = this.redSpinner.getModel();
         this.model.setRedDelay((Integer) spinnerModel.getValue());
     }
 
     private void handleYellowItemAction(ItemEvent itemEvent) {
         int state = itemEvent.getStateChange();
         if (state == ItemEvent.SELECTED) {
-            model.turnOnYellow();
+            this.model.turnOnYellow();
         } else {
-            model.turnOffYellow();
+            this.model.turnOffYellow();
         }
     }
 
     private void handleYellowDelayChange(ChangeEvent changeEvent) {
-        SpinnerModel spinnerModel = YellowSpinner.getModel();
+        SpinnerModel spinnerModel = this.YellowSpinner.getModel();
         this.model.setYellowDelay((Integer) spinnerModel.getValue());
     }
 
     private void handleGreenItemAction(ItemEvent itemEvent) {
         int state = itemEvent.getStateChange();
         if (state == ItemEvent.SELECTED) {
-            model.turnOnGreen();
+            this.model.turnOnGreen();
         } else {
-            model.turnOffGreen();
+            this.model.turnOffGreen();
         }
     }
 
     private void handleGreenDelayChange(ChangeEvent changeEvent) {
-        SpinnerModel spinnerModel = greenSpinner.getModel();
+        SpinnerModel spinnerModel = this.greenSpinner.getModel();
         this.model.setGreenDelay((Integer) spinnerModel.getValue());
     }
 
@@ -121,7 +124,7 @@ public class TrafficLightController extends JPanel  {
             System.out.println(content);
 
             TrafficLight trafficLight = TrafficLight.parse(content.toString());
-            model.setTrafficLight(trafficLight);
+            this.model.setTrafficLight(trafficLight);
 
             synchronizeGUIToModel();
         } catch (IOException e) {
@@ -130,9 +133,9 @@ public class TrafficLightController extends JPanel  {
     }
 
     private String getLightURL() {
-        String lightURL = appProps.getProperty("info.swiss-as.com.light");
-        if (appProps.getProperty("4lc") != null) {
-            lightURL = appProps.getProperty("info.swiss-as.com.light") + appProps.getProperty("4lc");
+        String lightURL = this.appProps.getProperty("info.swiss-as.com.light");
+        if (this.appProps.getProperty("4lc") != null) {
+            lightURL = this.appProps.getProperty("info.swiss-as.com.light") + this.appProps.getProperty("4lc");
         }
         return lightURL;
     }
@@ -140,19 +143,19 @@ public class TrafficLightController extends JPanel  {
     private void loadAppProperties() {
         try (InputStream resourceAsStream = TrafficLightController.class.getClassLoader()
                 .getResourceAsStream("app.properties")) {
-            appProps.load(resourceAsStream);
+            this.appProps.load(resourceAsStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void synchronizeGUIToModel() {
-        redButton.setSelected(model.isRedOn());
-        yellowButton.setSelected(model.isYellowOn());
-        greenButton.setSelected(model.isGreenOn());
-        redSpinner.setValue((Integer) model.getRedDelay());
-        YellowSpinner.setValue((Integer) model.getYellowDelay());
-        greenSpinner.setValue((Integer) model.getGreenDelay());
+        this.redButton.setSelected(this.model.isRedOn());
+        this.yellowButton.setSelected(this.model.isYellowOn());
+        this.greenButton.setSelected(this.model.isGreenOn());
+        this.redSpinner.setValue((Integer) this.model.getRedDelay());
+        this.YellowSpinner.setValue((Integer) this.model.getYellowDelay());
+        this.greenSpinner.setValue((Integer) this.model.getGreenDelay());
     }
 
     private JToggleButton addLabeledToggleButton(Container c, String label) {

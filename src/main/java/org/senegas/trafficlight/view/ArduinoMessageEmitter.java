@@ -27,12 +27,12 @@ public class ArduinoMessageEmitter implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        port.send(model.toArduinoCommand());
+        this.port.send(this.model.toArduinoCommand());
     }
 
     private void initSerialPort() {
         try {
-            port = CommPortSelector.get().select();
+            this.port = CommPortSelector.get().select();
         } catch (CommPortException e) {
             System.err.println(e);
         }

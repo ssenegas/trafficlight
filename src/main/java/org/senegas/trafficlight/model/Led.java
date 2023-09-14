@@ -28,14 +28,14 @@ public class Led implements Switchable {
         this.isOn = false;
     }
     public Color getColor() {
-        return color;
+        return this.color;
     }
     public boolean isOn() {
-        return isOn;
+        return this.isOn;
     }
 
     public int getDelay() {
-        return delay;
+        return this.delay;
     }
 
     public void setDelay(int delay) {
@@ -45,9 +45,9 @@ public class Led implements Switchable {
     @Override
     public String toString() {
         return "Led{" +
-                "color=" + color +
-                ", isOn=" + isOn +
-                ", delay=" + delay +
+                "color=" + this.color +
+                ", isOn=" + this.isOn +
+                ", delay=" + this.delay +
                 '}';
     }
 
@@ -56,11 +56,11 @@ public class Led implements Switchable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Led led = (Led) o;
-        return isOn == led.isOn && delay == led.delay && Objects.equals(color, led.color);
+        return this.isOn == led.isOn && this.delay == led.delay && Objects.equals(this.color, led.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(color, isOn, delay);
+        return Objects.hash(this.color, this.isOn, this.delay);
     }
 }

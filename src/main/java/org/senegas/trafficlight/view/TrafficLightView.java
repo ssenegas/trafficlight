@@ -14,14 +14,14 @@ public class TrafficLightView extends JPanel implements PropertyChangeListener  
 
     public TrafficLightView() {
         super(new BorderLayout());
-        this.add(trafficLightComponent);
+        this.add(this.trafficLightComponent);
     }
 
     public void setModel(TrafficLightModel model) {
         this.model = model;
         if (this.model != null) {
             this.model.addPropertyChangeListener(this);
-            trafficLightComponent.setModel(this.model);
+            this.trafficLightComponent.setModel(this.model);
         } else {
             throw new NullPointerException("Given model is null");
         }
@@ -35,7 +35,7 @@ public class TrafficLightView extends JPanel implements PropertyChangeListener  
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        trafficLightComponent.restartTimer();
+        this.trafficLightComponent.restartTimer();
         repaint();
     }
 
