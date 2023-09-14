@@ -104,8 +104,7 @@ public class TrafficLightController extends JPanel  {
 
     private void pollLightsURL() {
         try {
-            URL url = new URL(appProps.getProperty("lightsURL"));
-
+            URL url = new URL(getLightURL());
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             int status = con.getResponseCode();
@@ -128,6 +127,14 @@ public class TrafficLightController extends JPanel  {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getLightURL() {
+        String lightURL = appProps.getProperty("info.swiss-as.com.light");
+        if (appProps.getProperty("4lc") != null) {
+            lightURL = appProps.getProperty("info.swiss-as.com.light") + appProps.getProperty("4lc");
+        }
+        return lightURL;
     }
 
     private void loadAppProperties() {
