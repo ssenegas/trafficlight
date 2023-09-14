@@ -7,20 +7,21 @@ import org.senegas.trafficlight.model.TrafficLightModel;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class TrafficLightController extends JPanel  {
     private final TrafficLightModel model;
     private final TrafficLightView view;
+    private JToggleButton redButton;
+    private JToggleButton yellowButton;
+    private JToggleButton greenButton;
     private JSpinner redSpinner;
     private JSpinner YellowSpinner;
     private JSpinner greenSpinner;
@@ -36,27 +37,24 @@ public class TrafficLightController extends JPanel  {
     private void startTimer() {
         TimerTask task = new PollingLightsURLTask();
         Timer timer = new Timer("PollingLightsURLTimer");
-        timer.scheduleAtFixedRate(task, 0, 5_000);
+        timer.scheduleAtFixedRate(task, 2_000, 5_000); // delay timer task for serial port detection
     }
 
     private void initGui() {
         final JPanel actionPanel = new JPanel(new MigLayout());
-        final JToggleButton redButton = addLabeledToggleButton(actionPanel, "Red");
+        redButton = addLabeledToggleButton(actionPanel, "Red");
         redSpinner = addSpinner(actionPanel);
-        final JToggleButton YellowButton = addLabeledToggleButton(actionPanel, "Yellow");
+        yellowButton = addLabeledToggleButton(actionPanel, "Yellow");
         YellowSpinner = addSpinner(actionPanel);
-        final JToggleButton greenButton = addLabeledToggleButton(actionPanel, "Green");
+        greenButton = addLabeledToggleButton(actionPanel, "Green");
         greenSpinner = addSpinner(actionPanel);
-        final JButton test = new JButton("Test");
-        actionPanel.add(test, "grow");
 
         redButton.addItemListener(this::handleRedItemAction);
         redSpinner.addChangeListener(this::handleRedDelayChange);
-        YellowButton.addItemListener(this::handleYellowItemAction);
+        yellowButton.addItemListener(this::handleYellowItemAction);
         YellowSpinner.addChangeListener(this::handleYellowDelayChange);
         greenButton.addItemListener(this::handleGreenItemAction);
         greenSpinner.addChangeListener(this::handleGreenDelayChange);
-        test.addActionListener(this::handleTestAction);
 
         this.add(actionPanel, BorderLayout.CENTER);
     }
@@ -103,9 +101,6 @@ public class TrafficLightController extends JPanel  {
         this.model.setGreenDelay((Integer) spinnerModel.getValue());
     }
 
-    private void handleTestAction(ActionEvent event) {
-    }
-
     private void pollLightsURL() {
         try {
             URL url = new URL("http://localhost:8080/examples/light.txt");
@@ -127,9 +122,20 @@ public class TrafficLightController extends JPanel  {
 
             TrafficLight trafficLight = TrafficLight.parse(content.toString());
             model.setTrafficLight(trafficLight);
+
+            synchronizeGUIToModel();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void synchronizeGUIToModel() {
+        redButton.setSelected(model.isRedOn());
+        yellowButton.setSelected(model.isYellowOn());
+        greenButton.setSelected(model.isGreenOn());
+        redSpinner.setValue((Integer) model.getRedDelay());
+        YellowSpinner.setValue((Integer) model.getYellowDelay());
+        greenSpinner.setValue((Integer) model.getGreenDelay());
     }
 
     private JToggleButton addLabeledToggleButton(Container c, String label) {
