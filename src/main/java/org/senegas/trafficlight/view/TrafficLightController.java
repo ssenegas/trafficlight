@@ -15,6 +15,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TrafficLightController extends JPanel  {
     private final TrafficLightModel model;
@@ -28,13 +30,13 @@ public class TrafficLightController extends JPanel  {
         this.model = model;
         this.view = view;
         initGui();
-        initTimer();
+        startTimer();
     }
 
-    private void initTimer() {
-        //TimerTask task = new BlinkerLedsTask(this.model);
-        //Timer timer = new Timer("Timer");
-        //timer.scheduleAtFixedRate(task, 0, 1_000);
+    private void startTimer() {
+        TimerTask task = new PollingLightsURLTask();
+        Timer timer = new Timer("PollingLightsURLTimer");
+        timer.scheduleAtFixedRate(task, 0, 5_000);
     }
 
     private void initGui() {
@@ -102,11 +104,12 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void handleTestAction(ActionEvent event) {
-        final MessageFormat form = new MessageFormat("Green:{0}, Yellow:{1}, Red:{2}");
-        String[] values = { "On", "Off", "On" };
+    }
 
+    private void pollLightsURL() {
         try {
             URL url = new URL("http://localhost:8080/examples/light.txt");
+
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             int status = con.getResponseCode();
@@ -147,5 +150,13 @@ public class TrafficLightController extends JPanel  {
         c.add(spinner);
         c.add(new JLabel("ms"), "wrap");
         return spinner;
+    }
+
+    private class PollingLightsURLTask extends TimerTask {
+
+        @Override
+        public void run() {
+            pollLightsURL();
+        }
     }
 }

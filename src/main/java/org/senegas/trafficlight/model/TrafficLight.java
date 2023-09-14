@@ -4,13 +4,14 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class TrafficLight {
-    private Map<Color, Led> leds = new HashMap<>();
+    private final Map<Color, Led> leds = new HashMap<>();
 
     public static TrafficLight parse(String input) {
         final Pattern p = Pattern.compile("Green:(On|Off|Blinking), Yellow:(On|Off|Blinking), Red:(On|Off|Blinking)");
@@ -117,6 +118,21 @@ public class TrafficLight {
 
     public void setGreenDelay(int value) {
         setDelay(this.leds.get(Color.GREEN), value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TrafficLight that = (TrafficLight) o;
+        return Objects.equals(leds.get(Color.RED), that.leds.get(Color.RED)) &&
+               Objects.equals(leds.get(Color.YELLOW), that.leds.get(Color.YELLOW)) &&
+               Objects.equals(leds.get(Color.GREEN), that.leds.get(Color.GREEN));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(leds.get(Color.RED), leds.get(Color.YELLOW), leds.get(Color.GREEN));
     }
 
     private void turnOn(Led l) {

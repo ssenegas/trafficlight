@@ -1,6 +1,7 @@
 package org.senegas.trafficlight.model;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class Led implements Switchable {
     private final Color color;
@@ -48,5 +49,18 @@ public class Led implements Switchable {
                 ", isOn=" + isOn +
                 ", delay=" + delay +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Led led = (Led) o;
+        return isOn == led.isOn && delay == led.delay && Objects.equals(color, led.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, isOn, delay);
     }
 }

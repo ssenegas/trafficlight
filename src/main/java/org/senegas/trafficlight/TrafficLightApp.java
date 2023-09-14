@@ -12,7 +12,7 @@ import java.text.MessageFormat;
 public class TrafficLightApp {
 
     public static final String TITLE = "Traffic Light App";
-    public static final String VERSION = "0.4.0";
+    public static final String VERSION = "0.8.0";
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> new TrafficLightApp().create());
