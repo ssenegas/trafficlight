@@ -26,7 +26,7 @@ public class TrafficLightController extends JPanel  {
     private JToggleButton yellowButton;
     private JToggleButton greenButton;
     private JSpinner redSpinner;
-    private JSpinner YellowSpinner;
+    private JSpinner yellowSpinner;
     private JSpinner greenSpinner;
 
     public TrafficLightController(TrafficLightModel model, TrafficLightView view) {
@@ -49,14 +49,14 @@ public class TrafficLightController extends JPanel  {
         this.redButton = addLabeledToggleButton(actionPanel, "Red");
         this.redSpinner = addSpinner(actionPanel);
         this.yellowButton = addLabeledToggleButton(actionPanel, "Yellow");
-        this.YellowSpinner = addSpinner(actionPanel);
+        this.yellowSpinner = addSpinner(actionPanel);
         this.greenButton = addLabeledToggleButton(actionPanel, "Green");
         this.greenSpinner = addSpinner(actionPanel);
 
         this.redButton.addItemListener(this::handleRedItemAction);
         this.redSpinner.addChangeListener(this::handleRedDelayChange);
         this.yellowButton.addItemListener(this::handleYellowItemAction);
-        this.YellowSpinner.addChangeListener(this::handleYellowDelayChange);
+        this.yellowSpinner.addChangeListener(this::handleYellowDelayChange);
         this.greenButton.addItemListener(this::handleGreenItemAction);
         this.greenSpinner.addChangeListener(this::handleGreenDelayChange);
 
@@ -87,7 +87,7 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void handleYellowDelayChange(ChangeEvent changeEvent) {
-        SpinnerModel spinnerModel = this.YellowSpinner.getModel();
+        SpinnerModel spinnerModel = this.yellowSpinner.getModel();
         this.model.setYellowDelay((Integer) spinnerModel.getValue());
     }
 
@@ -154,7 +154,7 @@ public class TrafficLightController extends JPanel  {
         this.yellowButton.setSelected(this.model.isYellowOn());
         this.greenButton.setSelected(this.model.isGreenOn());
         this.redSpinner.setValue((Integer) this.model.getRedDelay());
-        this.YellowSpinner.setValue((Integer) this.model.getYellowDelay());
+        this.yellowSpinner.setValue((Integer) this.model.getYellowDelay());
         this.greenSpinner.setValue((Integer) this.model.getGreenDelay());
     }
 
