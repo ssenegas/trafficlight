@@ -35,6 +35,7 @@ public class TrafficLightView extends JPanel implements PropertyChangeListener  
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        trafficLightComponent.restartTimer();
         repaint();
     }
 

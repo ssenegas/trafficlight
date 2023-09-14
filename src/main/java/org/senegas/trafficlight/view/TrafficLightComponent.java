@@ -9,59 +9,31 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TrafficLightComponent extends JComponent {
-
-    public static final int TRAFFIC_LIGHT_WIDTH = 50;
-    public static final int GAP = 5;
-    private TrafficLightModel model;
+    private static final int TRAFFIC_LIGHT_WIDTH = 50;
+    private static final int GAP = 5;
     private boolean blinkyRedLed = false;
     private boolean blinkyYellowLed = false;
     private boolean blinkyGreenLed = false;
+    private TrafficLightModel model;
+    private Timer timer;
 
     public TrafficLightComponent() {
-        TimerTask task = new TimerTask() {
-            private long previousRedMillis = 0;
-            private long previousYellowMillis = 0;
-            private long previousGreenMillis = 0;
-
-            @Override
-            public void run() {
-                long currentTime = System.currentTimeMillis();
-                toogleRed(currentTime);
-                toogleYellow(currentTime);
-                toogleGreen(currentTime);
-                repaint();
-            }
-
-            private void toogleRed(long currentTime) {
-                if ((model != null) &&
-                        (currentTime - previousRedMillis > model.getRedDelay())) {
-                    blinkyRedLed = ! blinkyRedLed;
-                    previousRedMillis = currentTime;
-                }
-            }
-
-            private void toogleYellow(long currentTime) {
-                if ((model != null) &&
-                        (currentTime - previousYellowMillis > model.getYellowDelay())) {
-                    blinkyYellowLed = ! blinkyYellowLed;
-                    previousYellowMillis = currentTime;
-                }
-            }
-
-            private void toogleGreen(long currentTime) {
-                if ((model != null) &&
-                        (currentTime - previousGreenMillis > model.getGreenDelay())) {
-                    blinkyGreenLed = ! blinkyGreenLed;
-                    previousGreenMillis = currentTime;
-                }
-            }
-        };
-        Timer timer = new Timer("Blinky timer");
-        timer.scheduleAtFixedRate(task, 0, 250);
     }
 
     public void setModel(TrafficLightModel model) {
         this.model = model;
+        startTimer();
+    }
+
+    public void restartTimer() {
+        timer.cancel();
+        startTimer();
+    }
+
+    private void startTimer() {
+        TimerTask task = new BlinkyLedTimerTask(this.model);
+        timer = new Timer("Blinky timer");
+        timer.scheduleAtFixedRate(task, 0, 20);
     }
 
     public void paintComponent(Graphics g) {
@@ -119,5 +91,45 @@ public class TrafficLightComponent extends JComponent {
         }
         g2.setColor(isGreenOn ? Color.GREEN.brighter() : Color.GREEN.darker());
         g2.fill(greenBulb);
+    }
+
+    private class BlinkyLedTimerTask extends TimerTask {
+        final private TrafficLightModel model;
+        private long previousRedMillis = 0;
+        private long previousYellowMillis = 0;
+        private long previousGreenMillis = 0;
+
+        public BlinkyLedTimerTask(TrafficLightModel model) {
+            this.model = model;
+        }
+
+        @Override
+        public void run() {
+            updateRed(System.currentTimeMillis());
+            updateYellow(System.currentTimeMillis());
+            updateGreen(System.currentTimeMillis());
+            repaint();
+        }
+
+        private void updateRed(long currentTime) {
+            if (currentTime - previousRedMillis >= model.getRedDelay()) {
+                blinkyRedLed = ! blinkyRedLed;
+                previousRedMillis = currentTime;
+            }
+        }
+
+        private void updateYellow(long currentTime) {
+            if (currentTime - previousYellowMillis >= model.getYellowDelay()) {
+                blinkyYellowLed = ! blinkyYellowLed;
+                previousYellowMillis = currentTime;
+            }
+        }
+
+        private void updateGreen(long currentTime) {
+            if (currentTime - previousGreenMillis >= model.getGreenDelay()) {
+                blinkyGreenLed = ! blinkyGreenLed;
+                previousGreenMillis = currentTime;
+            }
+        }
     }
 }
