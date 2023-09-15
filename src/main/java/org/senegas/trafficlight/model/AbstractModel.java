@@ -3,7 +3,7 @@ package org.senegas.trafficlight.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 public abstract class AbstractModel {
-    protected PropertyChangeSupport propertyChangeSupport;
+    protected final PropertyChangeSupport propertyChangeSupport;
 
     protected AbstractModel() {
         this.propertyChangeSupport = new PropertyChangeSupport(this);

@@ -125,23 +125,21 @@ public class TrafficLight {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TrafficLight that = (TrafficLight) o;
-        return Objects.equals(leds.get(Color.RED), that.leds.get(Color.RED)) &&
-               Objects.equals(leds.get(Color.YELLOW), that.leds.get(Color.YELLOW)) &&
-               Objects.equals(leds.get(Color.GREEN), that.leds.get(Color.GREEN));
+        return Objects.equals(this.leds.get(Color.RED), that.leds.get(Color.RED)) &&
+               Objects.equals(this.leds.get(Color.YELLOW), that.leds.get(Color.YELLOW)) &&
+               Objects.equals(this.leds.get(Color.GREEN), that.leds.get(Color.GREEN));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(leds.get(Color.RED), leds.get(Color.YELLOW), leds.get(Color.GREEN));
+        return Objects.hash(this.leds.get(Color.RED), this.leds.get(Color.YELLOW), this.leds.get(Color.GREEN));
     }
 
     private void turnOn(Led l) {
-        boolean oldValue = l.isOn();
         l.turnOn();
     }
 
     private void turnOff(Led l) {
-        boolean oldValue = l.isOn();
         l.turnOff();
     }
 
@@ -154,7 +152,6 @@ public class TrafficLight {
     }
 
     private void setDelay(Led l, int value) {
-        int oldValue = l.getDelay();
         l.setDelay(value);
     }
 }
