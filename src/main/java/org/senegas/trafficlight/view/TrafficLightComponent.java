@@ -11,6 +11,13 @@ import java.util.TimerTask;
 public class TrafficLightComponent extends JComponent {
     private static final int TRAFFIC_LIGHT_WIDTH = 50;
     private static final int GAP = 5;
+
+    private static final Color RED_ON = Color.RED.brighter().brighter();
+    private static final Color YELLOW_ON = Color.YELLOW.brighter().brighter();
+    private static final Color GREEN_ON = Color.GREEN.brighter().brighter();
+    private static final Color RED_OFF = Color.RED.darker().darker();
+    private static final Color YELLOW_OFF = Color.YELLOW.darker().darker();
+    private static final Color GREEN_OFF = Color.GREEN.darker().darker();
     private boolean blinkyRedLed = false;
     private boolean blinkyYellowLed = false;
     private boolean blinkyGreenLed = false;
@@ -70,7 +77,7 @@ public class TrafficLightComponent extends JComponent {
         if (this.model.getRedDelay() > 0) {
             isRedOn = this.blinkyRedLed;
         }
-        g2.setColor(isRedOn ? Color.RED.brighter() : Color.RED.darker());
+        g2.setColor(isRedOn ? RED_ON : RED_OFF);
         g2.fill(redBulb);
     }
 
@@ -80,7 +87,7 @@ public class TrafficLightComponent extends JComponent {
         if (this.model.getYellowDelay() > 0) {
             isYellowOn = this.blinkyYellowLed;
         }
-        g2.setColor(isYellowOn ? Color.YELLOW.brighter() : Color.YELLOW.darker());
+        g2.setColor(isYellowOn ? YELLOW_ON : YELLOW_OFF);
         g2.fill(YellowBulb);
     }
 
@@ -90,7 +97,7 @@ public class TrafficLightComponent extends JComponent {
         if (this.model.getGreenDelay() > 0) {
             isGreenOn = this.blinkyGreenLed;
         }
-        g2.setColor(isGreenOn ? Color.GREEN.brighter() : Color.GREEN.darker());
+        g2.setColor(isGreenOn ? GREEN_ON : GREEN_OFF);
         g2.fill(greenBulb);
     }
 
