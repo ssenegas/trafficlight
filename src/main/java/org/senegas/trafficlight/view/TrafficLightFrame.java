@@ -13,8 +13,8 @@ import java.net.URL;
  * see https://docs.oracle.com/javase/tutorial/uiswing/misc/systemtray.html
  */
 public class TrafficLightFrame extends JFrame {
-    TrayIcon trayIcon;
-    SystemTray tray;
+    private TrayIcon trayIcon;
+    private SystemTray tray;
 
     public TrafficLightFrame(String title) throws HeadlessException {
         super(title);
@@ -38,31 +38,31 @@ public class TrafficLightFrame extends JFrame {
         setIconImage(createImage("/images/Traffic_lights_icon256.png", "icon"));
     }
 
-    private void handleWindowState(WindowEvent e) {
-        if (e.getNewState() == ICONIFIED) {
+    private void handleWindowState(WindowEvent windowsEvent) {
+        if (windowsEvent.getNewState() == ICONIFIED) {
             try {
                 this.tray.add(this.trayIcon);
                 setVisible(false);
                 System.out.println("added to SystemTray");
-            } catch (AWTException ex) {
+            } catch (AWTException e) {
                 System.out.println("TrayIcon could not be added.");
             }
         }
-        if (e.getNewState() == 7) {
-            try{
+        if (windowsEvent.getNewState() == 7) {
+            try {
                 this.tray.add(this.trayIcon);
                 setVisible(false);
                 System.out.println("added to SystemTray");
-            } catch (AWTException ex) {
+            } catch (AWTException e) {
                 System.out.println("TrayIcon could not be added.");
             }
         }
-        if (e.getNewState() == MAXIMIZED_BOTH) {
+        if (windowsEvent.getNewState() == MAXIMIZED_BOTH) {
             this.tray.remove(this.trayIcon);
             setVisible(true);
             System.out.println("TrayIcon could not be removed.");
         }
-        if (e.getNewState() == NORMAL) {
+        if (windowsEvent.getNewState() == NORMAL) {
             this.tray.remove(this.trayIcon);
             setVisible(true);
             System.out.println("TrayIcon could not be removed.");
