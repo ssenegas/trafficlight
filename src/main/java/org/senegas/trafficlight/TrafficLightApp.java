@@ -3,6 +3,7 @@
  */
 package org.senegas.trafficlight;
 
+import org.senegas.trafficlight.view.TrafficLightFrame;
 import org.senegas.trafficlight.view.TrafficLightPanel;
 
 import javax.swing.*;
@@ -19,7 +20,7 @@ public class TrafficLightApp {
     }
 
     private void create() {
-        final JFrame f = new JFrame(MessageFormat.format("{0} v{1}", TITLE, VERSION));
+        final JFrame f = new TrafficLightFrame(MessageFormat.format("{0} v{1}", TITLE, VERSION));
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.add(new TrafficLightPanel());
         f.pack();
