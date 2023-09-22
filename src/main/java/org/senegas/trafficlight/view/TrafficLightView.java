@@ -17,13 +17,10 @@ public class TrafficLightView extends JPanel implements PropertyChangeListener  
     }
 
     public void setModel(TrafficLightModel model) {
+        assert model != null : "model should not be null";
         this.model = model;
-        if (this.model != null) {
-            this.model.addPropertyChangeListener(this);
-            this.trafficLightComponent.setModel(this.model);
-        } else {
-            throw new NullPointerException("Given model is null");
-        }
+        this.model.addPropertyChangeListener(this);
+        this.trafficLightComponent.setModel(this.model);
     }
 
     @Override

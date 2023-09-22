@@ -116,7 +116,7 @@ public class TrafficLightController extends JPanel  {
                 .getResourceAsStream("app.properties")) {
             this.appProps.load(resourceAsStream);
         } catch (IOException e) {
-        	LOGGER.log(Level.SEVERE, "Somwething went wrong when reading application properties: {0}",
+        	LOGGER.log(Level.SEVERE, "Something went wrong when reading application properties: {0}",
         			e.getMessage());
         }
     }
@@ -167,28 +167,28 @@ public class TrafficLightController extends JPanel  {
                 LOGGER.log(Level.INFO, "{0}", content);
 
                 TrafficLight trafficLight = TrafficLight.parse(content.toString());
-                model.setTrafficLight(trafficLight);
+                TrafficLightController.this.model.setTrafficLight(trafficLight);
 
                 synchronizeGUIToModel();
             } catch (IOException e) {
-            	LOGGER.log(Level.SEVERE, "Somwething went wrong when polling light URL: {0}",
+            	LOGGER.log(Level.SEVERE, "Something went wrong when polling light URL: {0}",
             			e.getMessage());
             }
         }
         
         private void synchronizeGUIToModel() {
-            redButton.setSelected(model.isRedOn());
-            yellowButton.setSelected(model.isYellowOn());
-            greenButton.setSelected(model.isGreenOn());
-            redSpinner.setValue(model.getRedDelay());
-            yellowSpinner.setValue(model.getYellowDelay());
-            greenSpinner.setValue(model.getGreenDelay());
+            TrafficLightController.this.redButton.setSelected(TrafficLightController.this.model.isRedOn());
+            TrafficLightController.this.yellowButton.setSelected(TrafficLightController.this.model.isYellowOn());
+            TrafficLightController.this.greenButton.setSelected(TrafficLightController.this.model.isGreenOn());
+            TrafficLightController.this.redSpinner.setValue(TrafficLightController.this.model.getRedDelay());
+            TrafficLightController.this.yellowSpinner.setValue(TrafficLightController.this.model.getYellowDelay());
+            TrafficLightController.this.greenSpinner.setValue(TrafficLightController.this.model.getGreenDelay());
         }
         
         private String getLightURL() {
-            String lightURL = appProps.getProperty("info.swiss-as.com.light");
-            if (appProps.getProperty("4lc") != null) {
-                lightURL = appProps.getProperty("info.swiss-as.com.light") + appProps.getProperty("4lc");
+            String lightURL = TrafficLightController.this.appProps.getProperty("info.swiss-as.com.light");
+            if (TrafficLightController.this.appProps.getProperty("4lc") != null) {
+                lightURL = TrafficLightController.this.appProps.getProperty("info.swiss-as.com.light") + TrafficLightController.this.appProps.getProperty("4lc");
             }
             return lightURL;
         }

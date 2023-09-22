@@ -17,12 +17,9 @@ public class SerialMessageEmitter implements PropertyChangeListener {
     }
 
     public void setModel(TrafficLightModel model) {
+        assert model != null : "model should not be null";
         this.model = model;
-        if (this.model != null) {
-            this.model.addPropertyChangeListener(this);
-        } else {
-            throw new NullPointerException("Given model is null");
-        }
+        this.model.addPropertyChangeListener(this);
     }
 
     @Override
