@@ -1,16 +1,18 @@
 package org.senegas.trafficlight.serial;
 
-import com.fazecast.jSerialComm.SerialPort;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class CommPortSelector {
+import com.fazecast.jSerialComm.SerialPort;
 
-    // Singleton pattern
-    private final static CommPortSelector INSTANCE = new CommPortSelector();
+public enum CommPortSelector {
+	
+	INSTANCE;
+
+	private static final Logger LOGGER = Logger.getLogger(CommPortSelector.class.getName());
 
     private CommPortSelector() {
         // hide constructor
@@ -23,15 +25,14 @@ public class CommPortSelector {
     void dumpPorts() {
         SerialPort[] ports = SerialPort.getCommPorts();
         List<SerialPort> list = Arrays.asList(ports);
-
-        System.err.println(list.size()+" ports found:");
+        
+        LOGGER.log(Level.INFO, "{0} port(s) found:",
+        		list.size());
 
         for (SerialPort port : list) {
-            System.err.println("["+port.getSystemPortName()
-                    + "][" + port.getDescriptivePortName()
-                    + "][" + port.getSystemPortPath()
-                    + "][" + port.getPortLocation() + "]"
-            );
+        	LOGGER.log(Level.INFO, "{0} {1} {2} {3}", 
+        			new Object[] { port.getSystemPortName(), port.getDescriptivePortName(),
+        					               port.getSystemPortPath(), port.getPortLocation() });
         }
     }
 
@@ -54,7 +55,7 @@ public class CommPortSelector {
 
         SerialPort port = opt.get();
 
-        System.out.println("Detected Arduino connected on port [" + port.getSystemPortName()+ "]");
+        LOGGER.log(Level.INFO, "Arduino detected on port {0}", port.getSystemPortName());
         return new CommPort(port);
     }
 

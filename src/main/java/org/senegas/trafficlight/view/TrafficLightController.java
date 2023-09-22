@@ -17,8 +17,12 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TrafficLightController extends JPanel  {
+	private static final Logger LOGGER = Logger.getLogger(TrafficLightController.class.getName());
+	
     private final TrafficLightModel model;
     private final TrafficLightView view;
     private final Properties appProps = new Properties();
@@ -39,9 +43,11 @@ public class TrafficLightController extends JPanel  {
     }
 
     private void startTimer() {
-        TimerTask task = new PollingLightsURLTask();
-        Timer timer = new Timer("PollingLightsURLTimer");
-        timer.scheduleAtFixedRate(task, 2_000, 5_000); // delay timer task for serial port detection
+        TimerTask task = new PollingLightURLTask();
+        Timer timer = new Timer("PollingLightURLTimer");
+        
+        // delays the start of the timer task for serial port detection and initialization
+        timer.scheduleAtFixedRate(task, 2_000, 30_000);
     }
 
     private void initGui() {
@@ -105,57 +111,14 @@ public class TrafficLightController extends JPanel  {
         this.model.setGreenDelay((Integer) spinnerModel.getValue());
     }
 
-    private void pollLightsURL() {
-        try {
-            URL url = new URL(getLightURL());
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            int status = con.getResponseCode();
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer content = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-            in.close();
-            con.disconnect();
-            System.out.println(content);
-
-            TrafficLight trafficLight = TrafficLight.parse(content.toString());
-            this.model.setTrafficLight(trafficLight);
-
-            synchronizeGUIToModel();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String getLightURL() {
-        String lightURL = this.appProps.getProperty("info.swiss-as.com.light");
-        if (this.appProps.getProperty("4lc") != null) {
-            lightURL = this.appProps.getProperty("info.swiss-as.com.light") + this.appProps.getProperty("4lc");
-        }
-        return lightURL;
-    }
-
     private void loadAppProperties() {
         try (InputStream resourceAsStream = TrafficLightController.class.getClassLoader()
                 .getResourceAsStream("app.properties")) {
             this.appProps.load(resourceAsStream);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+        	LOGGER.log(Level.SEVERE, "Somwething went wrong when reading application properties: {0}",
+        			e.getMessage());
         }
-    }
-
-    private void synchronizeGUIToModel() {
-        this.redButton.setSelected(this.model.isRedOn());
-        this.yellowButton.setSelected(this.model.isYellowOn());
-        this.greenButton.setSelected(this.model.isGreenOn());
-        this.redSpinner.setValue((Integer) this.model.getRedDelay());
-        this.yellowSpinner.setValue((Integer) this.model.getYellowDelay());
-        this.greenSpinner.setValue((Integer) this.model.getGreenDelay());
     }
 
     private JToggleButton addLabeledToggleButton(Container c, String label) {
@@ -168,21 +131,66 @@ public class TrafficLightController extends JPanel  {
     }
 
     private JSpinner addSpinner(Container c) {
-        SpinnerModel model = new SpinnerNumberModel(0,
+        SpinnerModel spinnerNumberModel = new SpinnerNumberModel(0,
                 0,
                 5000,
                 500);
-        JSpinner spinner = new JSpinner(model);
+        JSpinner spinner = new JSpinner(spinnerNumberModel);
         c.add(spinner);
         c.add(new JLabel("ms"), "wrap");
         return spinner;
     }
 
-    private class PollingLightsURLTask extends TimerTask {
+    private class PollingLightURLTask extends TimerTask {
 
-        @Override
+		@Override
         public void run() {
-            pollLightsURL();
+            pollURL();
+        }
+        
+        private void pollURL() {
+            try {
+                URL url = new URL(getLightURL());
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                LOGGER.log(Level.INFO, "connection response code: {0}", con.getResponseCode());
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                StringBuilder content = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                in.close();
+                con.disconnect();
+                LOGGER.log(Level.INFO, "{0}", content);
+
+                TrafficLight trafficLight = TrafficLight.parse(content.toString());
+                model.setTrafficLight(trafficLight);
+
+                synchronizeGUIToModel();
+            } catch (IOException e) {
+            	LOGGER.log(Level.SEVERE, "Somwething went wrong when polling light URL: {0}",
+            			e.getMessage());
+            }
+        }
+        
+        private void synchronizeGUIToModel() {
+            redButton.setSelected(model.isRedOn());
+            yellowButton.setSelected(model.isYellowOn());
+            greenButton.setSelected(model.isGreenOn());
+            redSpinner.setValue(model.getRedDelay());
+            yellowSpinner.setValue(model.getYellowDelay());
+            greenSpinner.setValue(model.getGreenDelay());
+        }
+        
+        private String getLightURL() {
+            String lightURL = appProps.getProperty("info.swiss-as.com.light");
+            if (appProps.getProperty("4lc") != null) {
+                lightURL = appProps.getProperty("info.swiss-as.com.light") + appProps.getProperty("4lc");
+            }
+            return lightURL;
         }
     }
 }

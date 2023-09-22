@@ -1,9 +1,10 @@
 package org.senegas.trafficlight.view;
 
-import org.senegas.trafficlight.model.TrafficLightModel;
+import java.awt.BorderLayout;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+
+import org.senegas.trafficlight.model.TrafficLightModel;
 
 public class TrafficLightPanel extends JPanel {
 

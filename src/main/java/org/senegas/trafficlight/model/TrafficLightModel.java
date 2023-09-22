@@ -1,11 +1,20 @@
 package org.senegas.trafficlight.model;
 
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TrafficLightModel extends AbstractModel implements Serializable {
-    private TrafficLight trafficLight = new TrafficLight();
-
+	private static final Logger LOGGER = Logger.getLogger(TrafficLightModel.class.getName());
+	
+    private TrafficLight trafficLight;
+    
     public TrafficLightModel() {
+    	this(new TrafficLight());
+    }
+
+    public TrafficLightModel(TrafficLight trafficLight) {
+    	this.trafficLight = trafficLight;
     }
 
     public void setTrafficLight(TrafficLight trafficLight) {
@@ -15,9 +24,10 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
     }
 
     public String toArduinoCommand() {
-        System.out.println("Command to send :" + this.trafficLight.toArduinoCommand());
-        System.out.println("Length : " + this.trafficLight.toArduinoCommand().length());
-        return this.trafficLight.toArduinoCommand();
+    	String arduinoCommand = this.trafficLight.toArduinoCommand();
+    	LOGGER.log(Level.INFO, "Arduino command: {0} length {1}",
+    			new Object[] {arduinoCommand, arduinoCommand.length()});
+        return arduinoCommand;
     }
 
     public void turnOnRed() {
