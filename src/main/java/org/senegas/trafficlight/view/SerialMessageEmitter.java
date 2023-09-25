@@ -7,8 +7,11 @@ import org.senegas.trafficlight.serial.CommPortSelector;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SerialMessageEmitter implements PropertyChangeListener {
+    private static final Logger LOGGER = Logger.getLogger(SerialMessageEmitter.class.getName());
     private TrafficLightModel model;
     private CommPort port;
 
@@ -29,9 +32,9 @@ public class SerialMessageEmitter implements PropertyChangeListener {
 
     private void initSerialPort() {
         try {
-            this.port = CommPortSelector.get().select();
+            this.port = CommPortSelector.INSTANCE.select();
         } catch (CommPortException e) {
-            System.err.println(e);
+            LOGGER.log(Level.SEVERE, e.getMessage());
         }
     }
 }

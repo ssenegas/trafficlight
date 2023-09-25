@@ -2,36 +2,39 @@ package org.senegas.trafficlight.serial;
 
 import com.fazecast.jSerialComm.SerialPort;
 
-public class CommPort {
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-    final SerialPort port;
+public class CommPort {
+    private static final Logger LOGGER = Logger.getLogger(CommPort.class.getName());
+
+    private final SerialPort serialPort;
 
     public CommPort(SerialPort jSerialPort) {
-        port = jSerialPort;
+        this.serialPort = jSerialPort;
 
-        boolean opened = port.openPort();
-        if (!opened) {
-            throw new RuntimeException("Could not open port ["+port.getDescriptivePortName()+"] "+port.getSystemPortPath());
-        }
+        openPort();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Closing port " + jSerialPort.getSystemPortPath()+"] ...");
-            boolean b = jSerialPort.closePort();
-            System.out.println("Closed port: " + b);
+            LOGGER.log(Level.INFO, "Closing port {0}...", jSerialPort.getSystemPortPath());
+            boolean isPortClosed = jSerialPort.closePort();
+            LOGGER.log(Level.INFO, "Closing port has {0}", (isPortClosed ? "been successful" : "failed"));
         }));
 
-        port.setBaudRate(ICommPortConfig.BAUD_RATE);
+        this.serialPort.setBaudRate(ICommPortConfig.BAUD_RATE);
     }
 
-    public void send(String msg) {
-
-        char[] chars = msg.toCharArray();
-        byte[] bytes = new byte[chars.length];
-        for (int i = 0; i < chars.length; i++) {
-            bytes[i] = (byte) chars[i];
+    private void openPort() {
+        if (! this.serialPort.openPort()) {
+            throw new RuntimeException("Could not open port ["+ this.serialPort.getDescriptivePortName()+"] "+ this.serialPort.getSystemPortPath());
         }
-
-        port.writeBytes(bytes, bytes.length);
     }
 
+    public void send(String message) {
+        byte[] bytes = message.getBytes();
+        int written = this.serialPort.writeBytes(bytes, bytes.length);
+        if (written == -1) {
+            LOGGER.log(Level.SEVERE, "Write error");
+        }
+    }
 }
