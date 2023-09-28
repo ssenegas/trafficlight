@@ -19,7 +19,7 @@ public class TrafficLightApp {
         EventQueue.invokeLater(() -> new TrafficLightApp().create());
     }
 
-    private void create() {
+    private void createERROR() {
         final JFrame f = new TrafficLightFrame(MessageFormat.format("{0} v{1}", TITLE, VERSION));
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.add(new TrafficLightPanel());
