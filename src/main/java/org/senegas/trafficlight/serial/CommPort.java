@@ -31,7 +31,7 @@ public class CommPort {
     }
 
     public void send(String command) {
-        int written = this.serialPort.writeBytes((command + "\n").getBytes(),
+        int written = this.serialPort.writeBytes((command + "\0").getBytes(),
         		command.length() + 1);
         if (written == -1) {
             LOGGER.log(Level.SEVERE, "Write error");
