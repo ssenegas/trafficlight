@@ -30,9 +30,9 @@ public class CommPort {
         }
     }
 
-    public void send(String message) {
-        byte[] bytes = message.getBytes();
-        int written = this.serialPort.writeBytes(bytes, bytes.length);
+    public void send(String command) {
+        int written = this.serialPort.writeBytes((command + "\n").getBytes(),
+        		command.length() + 1);
         if (written == -1) {
             LOGGER.log(Level.SEVERE, "Write error");
         }
