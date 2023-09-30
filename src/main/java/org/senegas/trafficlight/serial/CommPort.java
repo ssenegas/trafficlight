@@ -6,6 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CommPort {
+
+    final int BAUD_RATE = 9600;
     private static final Logger LOGGER = Logger.getLogger(CommPort.class.getName());
 
     private final SerialPort serialPort;
@@ -21,7 +23,7 @@ public class CommPort {
             LOGGER.log(Level.INFO, "Closing port has {0}", (isPortClosed ? "been successful" : "failed"));
         }));
 
-        this.serialPort.setBaudRate(ICommPortConfig.BAUD_RATE);
+        this.serialPort.setBaudRate(BAUD_RATE);
     }
 
     private void openPort() {
