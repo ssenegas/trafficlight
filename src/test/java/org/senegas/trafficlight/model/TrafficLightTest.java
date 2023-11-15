@@ -26,14 +26,16 @@ class TrafficLightTest {
 
     @Test
     void givenIllegalInputToParseShouldThrowException() {
+        // given
         String[] values = { "foo", "bar", "baz" };
 
+        //when
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
                 TrafficLight.parse(form.format(values)));
 
+        //then
         String expectedMessage = "Given argument does not match";
         String actualMessage = exception.getMessage();
-
         assertTrue(actualMessage.contains(expectedMessage));
     }
 }

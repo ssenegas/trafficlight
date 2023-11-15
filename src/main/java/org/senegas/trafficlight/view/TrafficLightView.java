@@ -24,20 +24,8 @@ public class TrafficLightView extends JPanel implements PropertyChangeListener  
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-    }
-
-    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         this.trafficLightComponent.restartTimer();
         repaint();
-    }
-
-    private void drawDebugFrame(Graphics g) {
-        final Graphics2D g2 = (Graphics2D) g;
-        Dimension size = this.getSize();
-        g2.setColor(Color.MAGENTA);
-        g.drawRect(0, 0 , size.width, size.height);
     }
 }
