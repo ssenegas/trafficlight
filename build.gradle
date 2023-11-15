@@ -19,7 +19,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
     // https://mvnrepository.com/artifact/com.fazecast/jSerialComm
-    implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.10.3'
+    implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.10.4'
 
     // https://mvnrepository.com/artifact/com.miglayout/miglayout-swing
     implementation group: 'com.miglayout', name: 'miglayout-swing', version: '11.1'
