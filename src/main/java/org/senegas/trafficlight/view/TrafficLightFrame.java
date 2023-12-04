@@ -7,12 +7,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Specialized JFrame with system tray icon
  * see https://docs.oracle.com/javase/tutorial/uiswing/misc/systemtray.html
  */
 public class TrafficLightFrame extends JFrame {
+    private static final Logger LOGGER = Logger.getLogger(TrafficLightFrame.class.getName());
     private TrayIcon trayIcon;
     private SystemTray tray;
 
@@ -23,7 +26,7 @@ public class TrafficLightFrame extends JFrame {
 
     private void createTrayIcon() {
         if (! SystemTray.isSupported()) {
-            System.out.println("SystemTray is not supported");
+            LOGGER.log(Level.CONFIG, "SystemTray is not supported");
             return;
         }
 
@@ -43,29 +46,29 @@ public class TrafficLightFrame extends JFrame {
             try {
                 this.tray.add(this.trayIcon);
                 setVisible(false);
-                System.out.println("added to SystemTray");
+                LOGGER.log(Level.CONFIG, "TrafficLight added to SystemTray");
             } catch (AWTException e) {
-                System.out.println("TrayIcon could not be added.");
+                LOGGER.log(Level.SEVERE, "TrayIcon could not be added.");
             }
         }
         if (windowsEvent.getNewState() == 7) {
             try {
                 this.tray.add(this.trayIcon);
                 setVisible(false);
-                System.out.println("added to SystemTray");
+                LOGGER.log(Level.CONFIG, "TrafficLight added to SystemTray");
             } catch (AWTException e) {
-                System.out.println("TrayIcon could not be added.");
+                LOGGER.log(Level.SEVERE, "TrayIcon could not be added.");
             }
         }
         if (windowsEvent.getNewState() == MAXIMIZED_BOTH) {
             this.tray.remove(this.trayIcon);
             setVisible(true);
-            System.out.println("TrayIcon could not be removed.");
+            LOGGER.log(Level.CONFIG, "TrayIcon could not be removed.");
         }
         if (windowsEvent.getNewState() == NORMAL) {
             this.tray.remove(this.trayIcon);
             setVisible(true);
-            System.out.println("TrayIcon could not be removed.");
+            LOGGER.log(Level.CONFIG, "TrayIcon could not be removed.");
         }
     }
 
@@ -105,7 +108,7 @@ public class TrafficLightFrame extends JFrame {
     protected static Image createImage(String path, String description) {
         URL imageURL = TrafficLightApp.class.getResource(path);
         if (imageURL == null) {
-            System.err.println("Resource not found: " + path);
+            LOGGER.log(Level.SEVERE, "Resource not found: " + path);
             return null;
         } else {
             return (new ImageIcon(imageURL, description)).getImage();

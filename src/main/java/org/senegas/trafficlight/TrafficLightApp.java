@@ -3,12 +3,15 @@
  */
 package org.senegas.trafficlight;
 
+import com.formdev.flatlaf.FlatIntelliJLaf;
 import org.senegas.trafficlight.view.TrafficLightFrame;
 import org.senegas.trafficlight.view.TrafficLightPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.text.MessageFormat;
+
+
 
 public class TrafficLightApp {
 
@@ -20,6 +23,7 @@ public class TrafficLightApp {
     }
 
     private void create() {
+        FlatIntelliJLaf.setup();
         final JFrame f = new TrafficLightFrame(MessageFormat.format("{0} v{1}", TITLE, VERSION));
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.add(new TrafficLightPanel());
