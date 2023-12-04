@@ -16,7 +16,9 @@ import java.text.MessageFormat;
 public class TrafficLightApp {
 
     public static final String TITLE = "Traffic Light App";
-    public static final String VERSION = "1.0.0";
+    //TODO
+    // // see https://stackoverflow.com/questions/33020069/how-to-get-version-attribute-from-a-gradle-build-to-be-included-in-runtime-swing
+    public static final String VERSION = "1.0.1";
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> new TrafficLightApp().create());
