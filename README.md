@@ -7,4 +7,4 @@ This text is then parsed to create a new traffic-light model that will replace t
 
 Then, the Arduino firmware will decode the command to turn on/off/blink the LEDs. This project is in direct relation with RedLight(https://github.com/ssenegas/RedLight) project.
 
-![2023-09-23_01h30_51](https://github.com/ssenegas/trafficlight/assets/9662172/018e397f-01ac-4a6a-872b-36e439633736)
+![image](https://github.com/ssenegas/trafficlight/assets/9662172/ac1c9416-7c4d-4277-b4eb-d46e34ebe32e)
