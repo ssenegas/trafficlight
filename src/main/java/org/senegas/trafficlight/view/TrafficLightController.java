@@ -143,7 +143,11 @@ public class TrafficLightController extends JPanel  {
 
     private class PollingLightURLTask extends TimerTask {
 
-		@Override
+        private static final String INFO_URL_LIGHT_KEY = "info.url.light";
+        private static final String FOUR_LETTER_CODE_KEY = "4lc";
+        private static final String DEFAULT_URL = "https://info.swiss-as.com/light.txt";
+
+        @Override
         public void run() {
             pollURL();
         }
@@ -186,9 +190,10 @@ public class TrafficLightController extends JPanel  {
         }
         
         private String getLightURL() {
-            String lightURL = TrafficLightController.this.appProps.getProperty("info.swiss-as.com.light");
-            if (TrafficLightController.this.appProps.getProperty("4lc") != null) {
-                lightURL = TrafficLightController.this.appProps.getProperty("info.swiss-as.com.light") + TrafficLightController.this.appProps.getProperty("4lc");
+            String lightURL = TrafficLightController.this.appProps.getProperty(INFO_URL_LIGHT_KEY, DEFAULT_URL);
+            String letterCode = TrafficLightController.this.appProps.getProperty(FOUR_LETTER_CODE_KEY);
+            if (letterCode != null) {
+                lightURL += "?user="+letterCode;
             }
             return lightURL;
         }
