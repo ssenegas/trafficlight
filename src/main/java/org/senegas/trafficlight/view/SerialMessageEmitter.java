@@ -1,7 +1,9 @@
 package org.senegas.trafficlight.view;
 
+import com.fazecast.jSerialComm.SerialPort;
 import org.senegas.trafficlight.model.TrafficLightModel;
-import org.senegas.trafficlight.serial.CommPort;
+import org.senegas.trafficlight.serial.CommandSender;
+import org.senegas.trafficlight.serial.ConnectionManager;
 import org.senegas.trafficlight.serial.CommPortException;
 import org.senegas.trafficlight.serial.CommPortSelector;
 
@@ -13,7 +15,7 @@ import java.util.logging.Logger;
 public class SerialMessageEmitter implements PropertyChangeListener {
     private static final Logger LOGGER = Logger.getLogger(SerialMessageEmitter.class.getName());
     private TrafficLightModel model;
-    private CommPort port;
+    private CommandSender commandSender;
 
     public SerialMessageEmitter() {
         initSerialPort();
@@ -27,12 +29,15 @@ public class SerialMessageEmitter implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        this.port.send(this.model.toArduinoCommand());
+        this.commandSender.send(this.model.toArduinoCommand());
     }
 
     private void initSerialPort() {
         try {
-            this.port = CommPortSelector.INSTANCE.select();
+            SerialPort serialPort = CommPortSelector.INSTANCE.select();
+            serialPort.setBaudRate(9600);  // Set as needed
+
+            this.commandSender = new CommandSender(new ConnectionManager(serialPort));
         } catch (CommPortException e) {
             LOGGER.log(Level.SEVERE, e.getMessage());
         }

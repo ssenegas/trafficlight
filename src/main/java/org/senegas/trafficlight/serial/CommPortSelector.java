@@ -30,10 +30,9 @@ public enum CommPortSelector {
         }
     }
 
-    public CommPort select() throws CommPortException {
+    public SerialPort select() throws CommPortException {
 
         SerialPort[] commPorts = SerialPort.getCommPorts();
-
         Optional<SerialPort> opt = Arrays.stream(commPorts)
                 .filter(port -> port.getDescriptivePortName().contains("CH340"))
                 .findFirst();
@@ -49,9 +48,9 @@ public enum CommPortSelector {
             throw new CommPortException("Could not find a connected Arduino");
         }
 
-        SerialPort port = opt.get();
-        LOGGER.log(Level.INFO, "Arduino detected on port {0}", port.getSystemPortName());
+        SerialPort serialPort = opt.get();
+        LOGGER.log(Level.INFO, "Arduino detected on port {0}", serialPort.getSystemPortName());
 
-        return new CommPort(port);
+        return serialPort;
     }
 }

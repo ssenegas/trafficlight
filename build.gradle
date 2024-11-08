@@ -8,24 +8,24 @@ application {
 }
 
 group = 'org.senegas'
-version = '1.0.2'
+version = '1.1.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-
     // https://mvnrepository.com/artifact/com.fazecast/jSerialComm
-    implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.10.4'
+    implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.11.0'
 
     // https://mvnrepository.com/artifact/com.formdev/flatlaf
     implementation group: 'com.formdev', name: 'flatlaf', version: '3.2.5'
 
     // https://mvnrepository.com/artifact/com.miglayout/miglayout-swing
     implementation group: 'com.miglayout', name: 'miglayout-swing', version: '11.1'
+
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
 test {
