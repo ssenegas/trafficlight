@@ -9,16 +9,36 @@ import org.senegas.trafficlight.view.TrafficLightPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
-
-
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class TrafficLightApp {
+
+    private static final Logger logger = Logger.getLogger(TrafficLightApp.class.getName());
 
     public static final String TITLE = "Traffic Light App";
     //TODO
     // // see https://stackoverflow.com/questions/33020069/how-to-get-version-attribute-from-a-gradle-build-to-be-included-in-runtime-swing
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.1.1";
+
+    static {
+        try {
+            // Ensure the logs directory exists
+            Files.createDirectories(Paths.get("logs"));
+
+            // Load the custom logging configuration from resources
+            LogManager.getLogManager().readConfiguration(
+                    TrafficLightApp.class.getClassLoader().getResourceAsStream("logging.properties")
+            );
+        } catch (IOException e) {
+            logger.severe("Failed to load logging configuration: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> new TrafficLightApp().create());
