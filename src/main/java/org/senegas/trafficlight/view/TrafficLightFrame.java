@@ -21,6 +21,16 @@ public class TrafficLightFrame extends JFrame {
 
     public TrafficLightFrame(String title) throws HeadlessException {
         super(title);
+
+        final String asciiArtTitle = "\n _____           __  __ _      _     _       _     _   \n" +
+                "|_   _| __ __ _ / _|/ _(_) ___| |   (_) __ _| |__ | |_ \n" +
+                "  | || '__/ _` | |_| |_| |/ __| |   | |/ _` | '_ \\| __|\n" +
+                "  | || | | (_| |  _|  _| | (__| |___| | (_| | | | | |_ \n" +
+                "  |_||_|  \\__,_|_| |_| |_|\\___|_____|_|\\__, |_| |_|\\__|\n" +
+                "                                       |___/           ";
+        LOGGER.log(Level.INFO, asciiArtTitle);
+        LOGGER.log(Level.INFO, title + " has started");
+
         createTrayIcon();
     }
 
