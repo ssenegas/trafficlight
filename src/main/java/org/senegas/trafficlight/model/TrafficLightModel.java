@@ -1,5 +1,8 @@
 package org.senegas.trafficlight.model;
 
+import org.llschall.ardwloop.ArdwloopStarter;
+import org.llschall.ardwloop.IArdwConfig;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -9,6 +12,7 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(TrafficLightModel.class.getName());
 	
     private TrafficLight trafficLight;
+    private final TrafficLightProgram program = new TrafficLightProgram();
     
     public TrafficLightModel() {
     	this(new TrafficLight());
@@ -16,6 +20,10 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
 
     public TrafficLightModel(TrafficLight trafficLight) {
     	this.trafficLight = trafficLight;
+    }
+
+    public void start() {
+        ArdwloopStarter.get().start(program, IArdwConfig.BAUD_19200);
     }
 
     public void setTrafficLight(TrafficLight trafficLight) {
