@@ -1,5 +1,6 @@
 package org.senegas.trafficlight.model;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,37 +33,37 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
 
     public void turnOnRed() {
         boolean oldValue = trafficLight.isRedOn();
-        trafficLight.turnOnRed();
+        trafficLight.turnOn(Color.RED);
         firePropertyChange("turnOn", oldValue, trafficLight.isRedOn());
     }
 
     public void turnOnYellow() {
         boolean oldValue = trafficLight.isYellowOn();
-        trafficLight.turnOnYellow();
+        trafficLight.turnOn(Color.YELLOW);
         firePropertyChange("turnOn", oldValue, trafficLight.isYellowOn());
     }
 
     public void turnOnGreen() {
         boolean oldValue = trafficLight.isGreenOn();
-        trafficLight.turnOnGreen();
+        trafficLight.turnOn(Color.GREEN);
         firePropertyChange("turnOn", oldValue, trafficLight.isGreenOn());
     }
 
     public void turnOffRed() {
         boolean oldValue = trafficLight.isRedOn();
-        trafficLight.turnOffRed();
+        trafficLight.turnOff(Color.RED);
         firePropertyChange("turnOff", oldValue, trafficLight.isRedOn());
     }
 
     public void turnOffYellow() {
         boolean oldValue = trafficLight.isYellowOn();
-        trafficLight.turnOffYellow();
+        trafficLight.turnOff(Color.YELLOW);
         firePropertyChange("turnOff", oldValue, trafficLight.isYellowOn());
     }
 
     public void turnOffGreen() {
         boolean oldValue = trafficLight.isGreenOn();
-        trafficLight.turnOffGreen();
+        trafficLight.turnOff(Color.GREEN);
         firePropertyChange("turnOff", oldValue, trafficLight.isGreenOn());
     }
 
@@ -106,5 +107,12 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
 
     public int getGreenDelay() {
         return trafficLight.getGreenDelay();
+    }
+
+    /**
+     * Notify listeners about a property change for the blinking state.
+     */
+    public void notifyBlinkingStateChanged() {
+        firePropertyChange("blinkingState", null, null);
     }
 }

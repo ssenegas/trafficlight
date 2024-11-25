@@ -30,10 +30,9 @@ public class TrafficLight {
                 return new Led(e.getKey(), isOn, delay);
             };
 
-            List<Led> leds =
-                    map.entrySet().stream()
-                            .map(toLed)
-                            .collect(Collectors.toList());
+            List<Led> leds = map.entrySet().stream()
+                    .map(toLed)
+                    .collect(Collectors.toList());
 
             return new TrafficLight(leds);
         }
@@ -41,7 +40,7 @@ public class TrafficLight {
     }
 
     public TrafficLight() {
-        this(java.util.List.of(new Led(Color.RED), new Led(Color.YELLOW), new Led(Color.GREEN)));
+        this(List.of(new Led(Color.RED), new Led(Color.YELLOW), new Led(Color.GREEN)));
     }
 
     // package-private to prevent explicit instantiation
@@ -60,64 +59,48 @@ public class TrafficLight {
                 String.format("%04d", getGreenDelay());
     }
 
-    public void turnOnRed() {
-        turnOn(this.leds.get(Color.RED));
+    public void turnOn(Color c) {
+        this.leds.get(c).turnOn();
     }
 
-    public void turnOnYellow() {
-        turnOn(this.leds.get(Color.YELLOW));
-    }
-
-    public void turnOnGreen() {
-        turnOn(this.leds.get(Color.GREEN));
-    }
-
-    public void turnOffRed() {
-        turnOff(this.leds.get(Color.RED));
-    }
-
-    public void turnOffYellow() {
-        turnOff(this.leds.get(Color.YELLOW));
-    }
-
-    public void turnOffGreen() {
-        turnOff(this.leds.get(Color.GREEN));
+    public void turnOff(Color c) {
+        this.leds.get(c).turnOff();
     }
 
     public boolean isRedOn() {
-        return isOn(this.leds.get(Color.RED));
+        return this.leds.get(Color.RED).isOn();
     }
 
     public boolean isYellowOn() {
-        return isOn(this.leds.get(Color.YELLOW));
+        return this.leds.get(Color.YELLOW).isOn();
     }
 
     public boolean isGreenOn() {
-        return isOn(this.leds.get(Color.GREEN));
+        return this.leds.get(Color.GREEN).isOn();
     }
 
     public int getRedDelay() {
-        return getDelay(this.leds.get(Color.RED));
+        return this.leds.get(Color.RED).getDelay();
     }
 
     public int getYellowDelay() {
-        return getDelay(this.leds.get(Color.YELLOW));
+        return this.leds.get(Color.YELLOW).getDelay();
     }
 
     public int getGreenDelay() {
-        return getDelay(this.leds.get(Color.GREEN));
+        return this.leds.get(Color.GREEN).getDelay();
     }
 
     public void setRedDelay(int value) {
-        setDelay(this.leds.get(Color.RED), value);
+        this.leds.get(Color.RED).setDelay(value);
     }
 
     public void setYellowDelay(int value) {
-        setDelay(this.leds.get(Color.YELLOW), value);
+        this.leds.get(Color.YELLOW).setDelay(value);
     }
 
     public void setGreenDelay(int value) {
-        setDelay(this.leds.get(Color.GREEN), value);
+        this.leds.get(Color.GREEN).setDelay(value);
     }
 
     @Override
@@ -133,25 +116,5 @@ public class TrafficLight {
     @Override
     public int hashCode() {
         return Objects.hash(this.leds.get(Color.RED), this.leds.get(Color.YELLOW), this.leds.get(Color.GREEN));
-    }
-
-    private void turnOn(Led l) {
-        l.turnOn();
-    }
-
-    private void turnOff(Led l) {
-        l.turnOff();
-    }
-
-    private boolean isOn(Led c) {
-        return c.isOn();
-    }
-
-    private int getDelay(Led c) {
-        return c.getDelay();
-    }
-
-    private void setDelay(Led l, int value) {
-        l.setDelay(value);
     }
 }

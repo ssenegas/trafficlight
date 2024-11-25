@@ -8,18 +8,21 @@ application {
 }
 
 group = 'org.senegas'
-version = '1.1.1'
+version = '2.0.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
+    implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.4.1'
+
     // https://mvnrepository.com/artifact/com.fazecast/jSerialComm
     implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.11.0'
 
     // https://mvnrepository.com/artifact/com.formdev/flatlaf
-    implementation group: 'com.formdev', name: 'flatlaf', version: '3.2.5'
+    implementation group: 'com.formdev', name: 'flatlaf', version: '3.5.2'
 
     // https://mvnrepository.com/artifact/com.miglayout/miglayout-swing
     implementation group: 'com.miglayout', name: 'miglayout-swing', version: '11.1'

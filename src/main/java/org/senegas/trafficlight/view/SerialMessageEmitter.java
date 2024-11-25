@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 public class SerialMessageEmitter implements PropertyChangeListener {
     private static final Logger LOGGER = Logger.getLogger(SerialMessageEmitter.class.getName());
+
     private TrafficLightModel model;
     private CommandSender commandSender;
 
@@ -29,7 +30,9 @@ public class SerialMessageEmitter implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        this.commandSender.send(this.model.toArduinoCommand());
+        if (this.commandSender != null) {
+            this.commandSender.send(this.model.toArduinoCommand());
+        }
     }
 
     private void initSerialPort() {

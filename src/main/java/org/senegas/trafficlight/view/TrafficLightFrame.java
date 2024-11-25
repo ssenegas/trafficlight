@@ -1,37 +1,152 @@
 package org.senegas.trafficlight.view;
 
+import net.miginfocom.swing.MigLayout;
+import org.apache.hc.core5.net.URIBuilder;
 import org.senegas.trafficlight.TrafficLightApp;
+import org.senegas.trafficlight.model.TrafficLightModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Specialized JFrame with system tray icon
- * see https://docs.oracle.com/javase/tutorial/uiswing/misc/systemtray.html
+ * View-Controller class (UI Delegate) that handles UI and events
+ * Specialized with system tray icon
+ * see <a href="https://docs.oracle.com/javase/tutorial/uiswing/misc/systemtray.html">systemtray</a>
  */
-public class TrafficLightFrame extends JFrame {
+public class TrafficLightFrame extends JFrame implements PropertyChangeListener {
     private static final Logger LOGGER = Logger.getLogger(TrafficLightFrame.class.getName());
+
+    private static final String INFO_URL_LIGHT_KEY = "info.url.light";
+    private static final String FOUR_LETTER_CODE_KEY = "4lc";
+    private static final String DEFAULT_URL = "https://info.swiss-as.com/light.txt";
+
+    private final TrafficLightController controller;
+
+    private JToggleButton redButton;
+    private JToggleButton yellowButton;
+    private JToggleButton greenButton;
+    private JSpinner redSpinner;
+    private JSpinner yellowSpinner;
+    private JSpinner greenSpinner;
+
+    private TrafficLightComponent trafficLightComponent;
+
     private TrayIcon trayIcon;
     private SystemTray tray;
 
-    public TrafficLightFrame(String title) throws HeadlessException {
+    public TrafficLightFrame(String title, TrafficLightModel model) throws HeadlessException {
         super(title);
+        setLayout(new BorderLayout());
+        this.controller = new TrafficLightController(model);
+        model.addPropertyChangeListener(this);
 
-        final String asciiArtTitle = "\n _____           __  __ _      _     _       _     _   \n" +
-                "|_   _| __ __ _ / _|/ _(_) ___| |   (_) __ _| |__ | |_ \n" +
-                "  | || '__/ _` | |_| |_| |/ __| |   | |/ _` | '_ \\| __|\n" +
-                "  | || | | (_| |  _|  _| | (__| |___| | (_| | | | | |_ \n" +
-                "  |_||_|  \\__,_|_| |_| |_|\\___|_____|_|\\__, |_| |_|\\__|\n" +
-                "                                       |___/           ";
-        LOGGER.log(Level.INFO, asciiArtTitle);
-        LOGGER.log(Level.INFO, title + " has started");
-
+        initComponents();
+        initSerialMessageEmitter();
         createTrayIcon();
+
+        this.controller.startPolling(getLightURL());
+    }
+
+    @Override
+    public void dispose() {
+        this.controller.stop();
+        this.trafficLightComponent.stop();
+        this.controller.getModel().removePropertyChangeListener(this);
+        super.dispose();
+    }
+
+    private void initSerialMessageEmitter() {
+        final SerialMessageEmitter serialMessageEmitter = new SerialMessageEmitter();
+        serialMessageEmitter.setModel(this.controller.getModel());
+    }
+
+    private void initComponents() {
+        final JPanel actionPanel = new JPanel(new MigLayout());
+
+        this.redButton = addLabeledToggleButton(actionPanel, "Red");
+        this.redButton.addItemListener(e -> controller.handleRedToggle(e.getStateChange() == ItemEvent.SELECTED));
+
+        this.redSpinner = addSpinner(actionPanel);
+        this.redSpinner.addChangeListener(e -> controller.handleRedDelayChange((Integer) redSpinner.getValue()));
+
+        this.yellowButton = addLabeledToggleButton(actionPanel, "Yellow");
+        this.yellowButton.addItemListener(e -> controller.handleYellowToggle(e.getStateChange() == ItemEvent.SELECTED));
+
+        this.yellowSpinner = addSpinner(actionPanel);
+        this.yellowSpinner.addChangeListener(e -> controller.handleYellowDelayChange((Integer) yellowSpinner.getValue()));
+
+        this.greenButton = addLabeledToggleButton(actionPanel, "Green");
+        this.greenButton.addItemListener(e -> controller.handleGreenToggle(e.getStateChange() == ItemEvent.SELECTED));
+
+        this.greenSpinner = addSpinner(actionPanel);
+        this.greenSpinner.addChangeListener(e -> controller.handleGreenDelayChange((Integer) greenSpinner.getValue()));
+
+        this.trafficLightComponent = new TrafficLightComponent(this.controller.getModel());
+
+        this.add(actionPanel, BorderLayout.CENTER);
+        this.add(trafficLightComponent, BorderLayout.EAST);
+    }
+
+    private Properties loadAppProperties() {
+        final Properties appProps = new Properties();
+        try (InputStream resourceAsStream = TrafficLightController.class.getClassLoader()
+                .getResourceAsStream("app.properties")) {
+            appProps.load(resourceAsStream);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Something went wrong when reading application properties: {0}",
+                    e.getMessage());
+        }
+        return appProps;
+    }
+
+    private URL getLightURL() {
+        Properties appProps = loadAppProperties();
+        try {
+            URIBuilder uriBuilder = new URIBuilder(
+                    appProps.getProperty(INFO_URL_LIGHT_KEY, DEFAULT_URL));
+            String letterCode = appProps.getProperty(FOUR_LETTER_CODE_KEY);
+            if (letterCode != null) {
+                uriBuilder.addParameter("user", letterCode);
+            }
+            // Call build() to create the final URI
+            return uriBuilder.build().toURL();
+        } catch (URISyntaxException | MalformedURLException e) {
+            LOGGER.log(Level.SEVERE, "Critical error: Unable to construct the URL.", e);
+            throw new IllegalStateException("Application cannot proceed without a valid URL.", e);
+        }
+    }
+
+    private JToggleButton addLabeledToggleButton(Container c, String textLabel) {
+        final JLabel label = new JLabel(textLabel);
+        c.add(label);
+        final JToggleButton toggleButton = new JToggleButton(textLabel);
+        label.setLabelFor(toggleButton);
+        c.add(toggleButton, "grow");
+        return toggleButton;
+    }
+
+    private JSpinner addSpinner(Container c) {
+        final SpinnerModel spinnerNumberModel = new SpinnerNumberModel(0,
+                0,
+                5000,
+                500);
+        final JSpinner spinner = new JSpinner(spinnerNumberModel);
+        c.add(spinner);
+        c.add(new JLabel("ms"), "wrap");
+        return spinner;
     }
 
     private void createTrayIcon() {
@@ -123,5 +238,27 @@ public class TrafficLightFrame extends JFrame {
         } else {
             return (new ImageIcon(imageURL, description)).getImage();
         }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if ("traffic-light".equals(evt.getPropertyName())) {
+            SwingUtilities.invokeLater(() -> {
+                updateButtonsFromModel();
+                updateSpinnersFromModel();
+            });
+        }
+    }
+
+    private void updateButtonsFromModel() {
+        this.redButton.setSelected(this.controller.getModel().isRedOn());
+        this.yellowButton.setSelected(this.controller.getModel().isYellowOn());
+        this.greenButton.setSelected(this.controller.getModel().isGreenOn());
+    }
+
+    private void updateSpinnersFromModel() {
+        this.redSpinner.setValue(this.controller.getModel().getRedDelay());
+        this.yellowSpinner.setValue(this.controller.getModel().getYellowDelay());
+        this.greenSpinner.setValue(this.controller.getModel().getGreenDelay());
     }
 }
