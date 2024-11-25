@@ -14,4 +14,5 @@ The Arduino firmware interprets commands from the application to control the LED
 
 This project directly relates to [RedLight](https://github.com/ssenegas/RedLight), which contains additional code and resources necessary for full functionality.
 
-![image](https://github.com/ssenegas/trafficlight/assets/9662172/ac1c9416-7c4d-4277-b4eb-d46e34ebe32e)
+![image](![image](https://github.com/user-attachments/assets/c54c2428-8f0b-47f8-985b-ccc28ebf088d)
+)
