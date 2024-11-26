@@ -1,5 +1,8 @@
 package org.senegas.trafficlight.model;
 
+import org.llschall.ardwloop.ArdwloopStarter;
+import org.llschall.ardwloop.IArdwConfig;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.logging.Level;
