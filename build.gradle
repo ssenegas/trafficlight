@@ -10,13 +10,6 @@ application {
 group = 'org.senegas'
 version = '2.0.0'
 
-// Apply a specific Java toolchain to ease working on different environments.
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
 repositories {
     mavenCentral()
 }
@@ -25,14 +18,14 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
     implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.4.1'
 
+    // https://mvnrepository.com/artifact/com.fazecast/jSerialComm
+    implementation group: 'com.fazecast', name: 'jSerialComm', version: '2.11.0'
+
     // https://mvnrepository.com/artifact/com.formdev/flatlaf
     implementation group: 'com.formdev', name: 'flatlaf', version: '3.5.2'
 
     // https://mvnrepository.com/artifact/com.miglayout/miglayout-swing
-    implementation group: 'com.miglayout', name: 'miglayout-swing', version: '11.4'
-
-    // https://mvnrepository.com/artifact/io.github.llschall/ardwloop
-    implementation group: 'io.github.llschall', name: 'ardwloop', version: '0.2.1'
+    implementation group: 'com.miglayout', name: 'miglayout-swing', version: '11.1'
 
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'

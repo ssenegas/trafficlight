@@ -31,7 +31,7 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
 
     private static final String INFO_URL_LIGHT_KEY = "info.url.light";
     private static final String FOUR_LETTER_CODE_KEY = "4lc";
-    private static final String DEFAULT_URL = "https://llschall.github.io/ardwloop";
+    private static final String DEFAULT_URL = "https://info.swiss-as.com/light.txt";
 
     private final TrafficLightController controller;
 

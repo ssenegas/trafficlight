@@ -1,27 +1,22 @@
 package org.senegas.trafficlight.view;
 
-import org.llschall.ardwloop.ArdwloopStarter;
-import org.llschall.ardwloop.IArdwConfig;
-import org.llschall.ardwloop.IArdwProgram;
-import org.llschall.ardwloop.structure.StructureTimer;
-import org.llschall.ardwloop.structure.data.LoopData;
-import org.llschall.ardwloop.structure.data.SerialData;
-import org.llschall.ardwloop.structure.data.SetupData;
+import com.fazecast.jSerialComm.SerialPort;
 import org.senegas.trafficlight.model.TrafficLightModel;
+import org.senegas.trafficlight.serial.CommandSender;
+import org.senegas.trafficlight.serial.ConnectionManager;
+import org.senegas.trafficlight.serial.CommPortException;
+import org.senegas.trafficlight.serial.CommPortSelector;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SerialMessageEmitter implements IArdwProgram, PropertyChangeListener {
+public class SerialMessageEmitter implements PropertyChangeListener {
     private static final Logger LOGGER = Logger.getLogger(SerialMessageEmitter.class.getName());
 
     private TrafficLightModel model;
-
-    boolean isRedOn = false;
-    boolean isYellowOn = false;
-    boolean isGreenOn = false;
+    private CommandSender commandSender;
 
     public SerialMessageEmitter() {
         initSerialPort();
@@ -30,44 +25,24 @@ public class SerialMessageEmitter implements IArdwProgram, PropertyChangeListene
     public void setModel(TrafficLightModel model) {
         assert model != null : "model should not be null";
         this.model = model;
+        this.model.addPropertyChangeListener(this);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-            isRedOn = model.isRedOn();
-            isYellowOn = model.isYellowOn();
-            isGreenOn = model.isGreenOn();
+        if (this.commandSender != null && ! "blinkingState".equals(evt.getPropertyName())) {
+            this.commandSender.send(this.model.toArduinoCommand());
         }
+    }
 
     private void initSerialPort() {
-        ArdwloopStarter.get().start(this, IArdwConfig.BAUD_19200);
-        LOGGER.log(Level.INFO, "Ardwloop started.");
-    }
+        try {
+            SerialPort serialPort = CommPortSelector.INSTANCE.select();
+            serialPort.setBaudRate(9600);  // Set as needed
 
-    @Override
-    public SetupData ardwSetup(SetupData setupData) {
-        return new SetupData(new SerialData(0,0,0,0,0,0));
-    }
-
-    @Override
-    public LoopData ardwLoop(LoopData loopData) {
-
-        StructureTimer.get().delayMs(99);
-
-        int ax = model.isRedOn() ? 1 : 0;
-        int ay = model.isYellowOn() ? 1 : 0;
-        int az = model.isGreenOn() ? 1 : 0;
-
-        return new LoopData(new SerialData(0,0,0,ax,ay,az));
-    }
-
-    @Override
-    public int getRc() {
-        return 1;
-    }
-
-    @Override
-    public int getSc() {
-        return 1;
+            this.commandSender = new CommandSender(new ConnectionManager(serialPort));
+        } catch (CommPortException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage());
+        }
     }
 }
