@@ -1,11 +1,15 @@
-package org.senegas.trafficlight.model;
+package org.senegas.trafficlight;
 
 import org.llschall.ardwloop.IArdwProgram;
 import org.llschall.ardwloop.structure.data.LoopData;
 import org.llschall.ardwloop.structure.data.SerialData;
 import org.llschall.ardwloop.structure.data.SetupData;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class TrafficLightProgram implements IArdwProgram {
+
+    public final AtomicReference<String> arduinoCmd = new AtomicReference<>();
 
     @Override
     public SetupData ardwSetup(SetupData setupData) {
