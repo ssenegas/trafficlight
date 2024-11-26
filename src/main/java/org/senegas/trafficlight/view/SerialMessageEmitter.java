@@ -1,7 +1,10 @@
 package org.senegas.trafficlight.view;
 
 import com.fazecast.jSerialComm.SerialPort;
+import org.llschall.ardwloop.ArdwloopStarter;
+import org.llschall.ardwloop.IArdwConfig;
 import org.senegas.trafficlight.model.TrafficLightModel;
+import org.senegas.trafficlight.model.TrafficLightProgram;
 import org.senegas.trafficlight.serial.CommandSender;
 import org.senegas.trafficlight.serial.ConnectionManager;
 import org.senegas.trafficlight.serial.CommPortException;
@@ -17,6 +20,8 @@ public class SerialMessageEmitter implements PropertyChangeListener {
 
     private TrafficLightModel model;
     private CommandSender commandSender;
+
+    private final TrafficLightProgram program = new TrafficLightProgram();
 
     public SerialMessageEmitter() {
         initSerialPort();
@@ -39,6 +44,10 @@ public class SerialMessageEmitter implements PropertyChangeListener {
 
         String command = this.model.toArduinoCommand();
         this.commandSender.send(command);
+    }
+
+    public void start() {
+        ArdwloopStarter.get().start(program, IArdwConfig.BAUD_19200);
     }
 
     private void initSerialPort() {

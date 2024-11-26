@@ -81,7 +81,5 @@ public class TrafficLightApp {
         f.pack();
         f.setLocationRelativeTo(null);
         f.setVisible(true);
-
-        model.start();
     }
 }
