@@ -34,10 +34,10 @@ public class SerialMessageEmitter implements IArdwProgram, PropertyChangeListene
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-            isRedOn = model.isRedOn();
-            isYellowOn = model.isYellowOn();
-            isGreenOn = model.isGreenOn();
-        }
+        isRedOn = model.isRedOn();
+        isYellowOn = model.isYellowOn();
+        isGreenOn = model.isGreenOn();
+   }
 
     private void initSerialPort() {
         ArdwloopStarter.get().start(this, IArdwConfig.BAUD_19200);
