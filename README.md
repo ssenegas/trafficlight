@@ -1,3 +1,3 @@
 # greenlight
 
-Greenlight is a fork of traffic light, that features ardwloop instead of redlight.
+Greenlight is a fork of [trafficlight](https://github.com/ssenegas/trafficlight), that features [ardwloop](https://llschall.github.io/ardwloop/) to control the Arduino board.
