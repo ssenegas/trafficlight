@@ -71,7 +71,6 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
     private void initSerialMessageEmitter() {
         final SerialMessageEmitter serialMessageEmitter = new SerialMessageEmitter();
         serialMessageEmitter.setModel(this.controller.getModel());
-        serialMessageEmitter.start();
     }
 
     private void initComponents() {
