@@ -36,7 +36,8 @@ public class SerialMessageEmitter implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (this.commandSender != null && ! "blinkingState".equals(evt.getPropertyName())) {
-            this.commandSender.send(this.model.toArduinoCommand());
+            String command = this.model.toArduinoCommand();
+            this.commandSender.send(command);
         }
     }
 
