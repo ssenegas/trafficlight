@@ -37,81 +37,81 @@ public class TrafficLightModel extends AbstractModel implements Serializable {
     }
 
     public void turnOnRed() {
-        boolean oldValue = trafficLight.isRedOn();
-        trafficLight.turnOn(Color.RED);
-        firePropertyChange(TURN_ON, oldValue, trafficLight.isRedOn());
+        boolean oldValue = trafficLight.getBulb(Light.RED).isOn();
+        trafficLight.getBulb(Light.RED).turnOn();
+        firePropertyChange(TURN_ON, oldValue, trafficLight.getBulb(Light.RED).isOn());
     }
 
     public void turnOnYellow() {
-        boolean oldValue = trafficLight.isYellowOn();
-        trafficLight.turnOn(Color.YELLOW);
-        firePropertyChange(TURN_ON, oldValue, trafficLight.isYellowOn());
+        boolean oldValue = trafficLight.getBulb(Light.YELLOW).isOn();
+        trafficLight.getBulb(Light.YELLOW).turnOn();
+        firePropertyChange(TURN_ON, oldValue, trafficLight.getBulb(Light.YELLOW).isOn());
     }
 
     public void turnOnGreen() {
-        boolean oldValue = trafficLight.isGreenOn();
-        trafficLight.turnOn(Color.GREEN);
-        firePropertyChange(TURN_ON, oldValue, trafficLight.isGreenOn());
+        boolean oldValue = trafficLight.getBulb(Light.GREEN).isOn();
+        trafficLight.getBulb(Light.GREEN).turnOn();
+        firePropertyChange(TURN_ON, oldValue, trafficLight.getBulb(Light.GREEN).isOn());
     }
 
     public void turnOffRed() {
-        boolean oldValue = trafficLight.isRedOn();
-        trafficLight.turnOff(Color.RED);
-        firePropertyChange(TURN_OFF, oldValue, trafficLight.isRedOn());
+        boolean oldValue = trafficLight.getBulb(Light.RED).isOn();
+        trafficLight.getBulb(Light.RED).turnOff();
+        firePropertyChange(TURN_OFF, oldValue, trafficLight.getBulb(Light.RED).isOn());
     }
 
     public void turnOffYellow() {
-        boolean oldValue = trafficLight.isYellowOn();
-        trafficLight.turnOff(Color.YELLOW);
-        firePropertyChange(TURN_OFF, oldValue, trafficLight.isYellowOn());
+        boolean oldValue = trafficLight.getBulb(Light.YELLOW).isOn();
+        trafficLight.getBulb(Light.YELLOW).turnOff();
+        firePropertyChange(TURN_OFF, oldValue, trafficLight.getBulb(Light.YELLOW).isOn());
     }
 
     public void turnOffGreen() {
-        boolean oldValue = trafficLight.isGreenOn();
-        trafficLight.turnOff(Color.GREEN);
-        firePropertyChange(TURN_OFF, oldValue, trafficLight.isGreenOn());
+        boolean oldValue = trafficLight.getBulb(Light.GREEN).isOn();
+        trafficLight.getBulb(Light.GREEN).turnOff();
+        firePropertyChange(TURN_OFF, oldValue, trafficLight.getBulb(Light.GREEN).isOn());
     }
 
     public void setRedDelay(int value) {
-        int oldValue = trafficLight.getRedDelay();
-        trafficLight.setRedDelay(value);
-        firePropertyChange(DELAY, oldValue, trafficLight.getRedDelay());
+        int oldValue = trafficLight.getBulb(Light.RED).getDelay();
+        trafficLight.getBulb(Light.RED).setBlinking(value);
+        firePropertyChange(DELAY, oldValue, trafficLight.getBulb(Light.RED).getDelay());
     }
 
     public void setYellowDelay(int value) {
-        int oldValue = trafficLight.getYellowDelay();
-        trafficLight.setYellowDelay(value);
-        firePropertyChange(DELAY, oldValue, trafficLight.getYellowDelay());
+        int oldValue = trafficLight.getBulb(Light.YELLOW).getDelay();
+        trafficLight.getBulb(Light.YELLOW).setBlinking(value);
+        firePropertyChange(DELAY, oldValue, trafficLight.getBulb(Light.YELLOW).getDelay());
     }
 
     public void setGreenDelay(int value) {
-        int oldValue = trafficLight.getGreenDelay();
-        trafficLight.setGreenDelay(value);
-        firePropertyChange(DELAY, oldValue, trafficLight.getGreenDelay());
+        int oldValue = trafficLight.getBulb(Light.GREEN).getDelay();
+        trafficLight.getBulb(Light.GREEN).setBlinking(value);
+        firePropertyChange(DELAY, oldValue, trafficLight.getBulb(Light.GREEN).getDelay());
     }
 
     public boolean isRedOn() {
-        return trafficLight.isRedOn();
+        return trafficLight.getBulb(Light.RED).isOn();
     }
 
     public boolean isYellowOn() {
-        return trafficLight.isYellowOn();
+        return trafficLight.getBulb(Light.YELLOW).isOn();
     }
 
     public boolean isGreenOn() {
-        return trafficLight.isGreenOn();
+        return trafficLight.getBulb(Light.GREEN).isOn();
     }
 
     public int getRedDelay() {
-        return trafficLight.getRedDelay();
+        return trafficLight.getBulb(Light.RED).getDelay();
     }
 
     public int getYellowDelay() {
-        return trafficLight.getYellowDelay();
+        return trafficLight.getBulb(Light.YELLOW).getDelay();
     }
 
     public int getGreenDelay() {
-        return trafficLight.getGreenDelay();
+        return trafficLight.getBulb(Light.GREEN).getDelay();
     }
 
     /**
