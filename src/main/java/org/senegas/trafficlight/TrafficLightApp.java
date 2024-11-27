@@ -27,7 +27,7 @@ public class TrafficLightApp {
     public static final String TITLE = "Traffic Light App";
     //TODO
     // // see https://stackoverflow.com/questions/33020069/how-to-get-version-attribute-from-a-gradle-build-to-be-included-in-runtime-swing
-    public static final String VERSION = "2.0.0";
+    public static final String VERSION = "2.1.0";
 
     static {
         try {

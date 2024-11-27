@@ -1,120 +1,99 @@
 package org.senegas.trafficlight.model;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.List;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class TrafficLight {
-    private final Map<Color, Led> leds = new HashMap<>();
+    public static final int DEFAULT_BLINKING_DELAY = 1_000;
 
-    public static TrafficLight parse(String input) {
-        final Pattern p = Pattern.compile("Green:(On|Off|Blinking), Yellow:(On|Off|Blinking), Red:(On|Off|Blinking)");
-        final Matcher m = p.matcher(input);
-        if (m.find()) {
-            Map<Color, Integer> map = Map.of(Color.GREEN, 1, Color.YELLOW, 2, Color.RED, 3);
-
-            Function<Map.Entry<Color, Integer>, Led> toLed = e -> {
-                boolean isOn = false;
-                int delay = 0;
-                if (m.group(e.getValue()).equals("Blinking")) {
-                    delay = 1_000;
-                } else {
-                    isOn = m.group(e.getValue()).equals("On");
-                }
-                return new Led(e.getKey(), isOn, delay);
-            };
-
-            List<Led> leds = map.entrySet().stream()
-                    .map(toLed)
-                    .collect(Collectors.toList());
-
-            return new TrafficLight(leds);
-        }
-        throw new IllegalArgumentException("Given argument does not match to the expected format");
-    }
+    private final EnumMap<Light, TrafficLightBulb> bulbs;
 
     public TrafficLight() {
-        this(List.of(new Led(Color.RED), new Led(Color.YELLOW), new Led(Color.GREEN)));
+        bulbs = new EnumMap<>(Light.class);
+        for (Light light : Light.values()) {
+            bulbs.put(light, new TrafficLightBulb(light));
+        }
     }
 
-    // package-private to prevent explicit instantiation
-    TrafficLight(List<Led> list) {
-        for (Led l: list) {
-            this.leds.put(l.getColor(), l);
-        }
+    public TrafficLightBulb getBulb(Light light) {
+        return bulbs.get(light);
+    }
+
+    public boolean isBulbOn(Light light) {
+        return getBulb(light).isOn();
+    }
+
+    public void turnOnBulb(Light light) {
+        getBulb(light).turnOn();
+    }
+
+    public void turnOffBulb(Light light) {
+        getBulb(light).turnOff();
+    }
+
+    public void setBulbBlinking(Light light, int delay) {
+        getBulb(light).setBlinking(delay);
     }
 
     public String toArduinoCommand() {
-        return (isRedOn() ? "R" : "r") +
-                String.format("%04d", getRedDelay()) +
-                (isYellowOn() ? "Y" : "y") +
-                String.format("%04d", getYellowDelay()) +
-                (isGreenOn() ? "G" : "g") +
-                String.format("%04d", getGreenDelay());
+        StringBuilder command = new StringBuilder();
+        for (Light light : Light.values()) {
+            TrafficLightBulb bulb = getBulb(light);
+            String delay = String.format("%04d", bulb.getDelay());
+            char lightChar = bulb.isOn() ? Character.toUpperCase(light.getName().charAt(0))
+                    : Character.toLowerCase(light.getName().charAt(0));
+            command.append(lightChar).append(delay);
+        }
+        return command.toString();
     }
 
-    public void turnOn(Color c) {
-        this.leds.get(c).turnOn();
+
+    public static TrafficLight parse(String input) {
+        final Pattern p = Pattern.compile(
+                "Green:(On|Off|Blinking), Yellow:(On|Off|Blinking), Red:(On|Off|Blinking)"
+        );
+
+        final Matcher matcher = p.matcher(input);
+        if (! matcher.matches()) {
+            throw new IllegalArgumentException("Invalid input format: " + input);
+        }
+
+        Map<Light, String> states = Map.of(
+                Light.GREEN, matcher.group(1),
+                Light.YELLOW, matcher.group(2),
+                Light.RED, matcher.group(3)
+        );
+
+        TrafficLight trafficLight = new TrafficLight();
+        for (Map.Entry<Light, String> entry : states.entrySet()) {
+            setTrafficLightBulbState(trafficLight, entry.getKey(), entry.getValue());
+        }
+        return trafficLight;
     }
 
-    public void turnOff(Color c) {
-        this.leds.get(c).turnOff();
-    }
-
-    public boolean isRedOn() {
-        return this.leds.get(Color.RED).isOn();
-    }
-
-    public boolean isYellowOn() {
-        return this.leds.get(Color.YELLOW).isOn();
-    }
-
-    public boolean isGreenOn() {
-        return this.leds.get(Color.GREEN).isOn();
-    }
-
-    public int getRedDelay() {
-        return this.leds.get(Color.RED).getDelay();
-    }
-
-    public int getYellowDelay() {
-        return this.leds.get(Color.YELLOW).getDelay();
-    }
-
-    public int getGreenDelay() {
-        return this.leds.get(Color.GREEN).getDelay();
-    }
-
-    public void setRedDelay(int value) {
-        this.leds.get(Color.RED).setDelay(value);
-    }
-
-    public void setYellowDelay(int value) {
-        this.leds.get(Color.YELLOW).setDelay(value);
-    }
-
-    public void setGreenDelay(int value) {
-        this.leds.get(Color.GREEN).setDelay(value);
+    private static void setTrafficLightBulbState(TrafficLight trafficLight, Light light, String state) {
+        TrafficLightBulb bulb = trafficLight.getBulb(light);
+        switch (state) {
+            case "On" -> bulb.turnOn();
+            case "Off" -> bulb.turnOff();
+            case "Blinking" -> bulb.setBlinking(DEFAULT_BLINKING_DELAY);
+            default -> throw new IllegalArgumentException("Unknown state for " + light.getName() + ": " + state);
+        }
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TrafficLight)) return false;
         TrafficLight that = (TrafficLight) o;
-        return Objects.equals(this.leds.get(Color.RED), that.leds.get(Color.RED)) &&
-               Objects.equals(this.leds.get(Color.YELLOW), that.leds.get(Color.YELLOW)) &&
-               Objects.equals(this.leds.get(Color.GREEN), that.leds.get(Color.GREEN));
+        return Objects.equals(bulbs, that.bulbs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.leds.get(Color.RED), this.leds.get(Color.YELLOW), this.leds.get(Color.GREEN));
+        return Objects.hash(bulbs);
     }
 }
