@@ -78,6 +78,7 @@ public class TrafficLightApp {
                 ((TrafficLightFrame)f).dispose();
             }
         });
+        f.setPreferredSize(new Dimension(350, 180));
         f.pack();
         f.setLocationRelativeTo(null);
         f.setVisible(true);
