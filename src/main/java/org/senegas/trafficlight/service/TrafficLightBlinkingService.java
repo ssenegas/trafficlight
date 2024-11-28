@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Handles blinking logic for the traffic light LEDs, without modifying the model.
+ * Handles blinking logic for the traffic light bulbs, without modifying the model.
  */
 public class TrafficLightBlinkingService {
     private static final Logger LOGGER = Logger.getLogger(TrafficLightBlinkingService.class.getName());
@@ -15,12 +15,12 @@ public class TrafficLightBlinkingService {
     private final TrafficLightModel model;
     private final Timer swingTimer;
 
-    // Internal blinking states for LEDs
+    // Internal blinking states for bulbs
     private boolean blinkingRed = false;
     private boolean blinkingYellow = false;
     private boolean blinkingGreen = false;
 
-    // Last update timestamps for each LED
+    // Last update timestamps for each bulb
     private long lastRedUpdate = 0;
     private long lastYellowUpdate = 0;
     private long lastGreenUpdate = 0;

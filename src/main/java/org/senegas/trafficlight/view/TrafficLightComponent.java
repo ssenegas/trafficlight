@@ -10,15 +10,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class TrafficLightComponent extends JComponent implements PropertyChangeListener {
-    private static final int TRAFFIC_LIGHT_WIDTH = 50;
-    private static final int GAP = 5;
-
-    private static final Color RED_ON = Color.RED.brighter().brighter();
-    private static final Color YELLOW_ON = Color.YELLOW.brighter().brighter();
-    private static final Color GREEN_ON = Color.GREEN.brighter().brighter();
-    private static final Color RED_OFF = Color.RED.darker().darker();
-    private static final Color YELLOW_OFF = Color.YELLOW.darker().darker();
-    private static final Color GREEN_OFF = Color.GREEN.darker().darker();
+    private static final double WIDTH_TO_HEIGHT_RATIO = 1.0 / 3.0; // Black box width is 1/3 of its height
+    private static final double BULB_TO_BOX_RATIO = 0.66; // Bulb diameter is 66% of black box width
 
     private final TrafficLightModel model;
     private final TrafficLightBlinkingService blinkingService;
@@ -35,6 +28,14 @@ public class TrafficLightComponent extends JComponent implements PropertyChangeL
     }
 
     @Override
+    public Dimension getPreferredSize() {
+        // Default size: 300px height with a 1:3 width-to-height ratio
+        int height = getParent() != null ? getParent().getHeight() : 300;
+        int width = (int) (height * WIDTH_TO_HEIGHT_RATIO);
+        return new Dimension(width, height);
+    }
+
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         repaint();
     }
@@ -45,48 +46,45 @@ public class TrafficLightComponent extends JComponent implements PropertyChangeL
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        drawTrafficLight(g2);
+
+        int width = getWidth();
+        int height = getHeight();
+
+        // Calculate black box dimensions
+        int blackBoxHeight = height;
+        int blackBoxWidth = (int) (blackBoxHeight * WIDTH_TO_HEIGHT_RATIO);
+        int blackBoxX = (width - blackBoxWidth) / 2; // Center the black box horizontally
+        int blackBoxY = 0; // Black box starts at the top of the component
+
+        // Calculate bulb dimensions
+        int bulbDiameter = (int) (blackBoxWidth * BULB_TO_BOX_RATIO);
+        int gap = (blackBoxHeight - 3 * bulbDiameter) / 4; // Divide remaining space into 4 gaps (top, middle, bottom)
+
+        // Draw the traffic light
+        drawTrafficLightBlackBox(g2, blackBoxX, blackBoxY, blackBoxWidth, blackBoxHeight);
+        drawTrafficLightBulbs(g2, blackBoxX, blackBoxY, blackBoxWidth, bulbDiameter, gap);
     }
 
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(TRAFFIC_LIGHT_WIDTH, TRAFFIC_LIGHT_WIDTH * 3 + 15);
-    }
-
-    private void drawTrafficLight(Graphics2D g2) {
-        drawTrafficLightBlackBox(g2, 0, 0);
-        drawTrafficLightBulbs(g2, 0, 0);
-    }
-
-    private void drawTrafficLightBlackBox(Graphics2D g2, int xLeft, int yTop) {
-        Rectangle box = new Rectangle(xLeft, yTop, TRAFFIC_LIGHT_WIDTH, 3 * TRAFFIC_LIGHT_WIDTH - 2 * GAP);
+    private void drawTrafficLightBlackBox(Graphics2D g2, int x, int y, int width, int height) {
         g2.setColor(Color.BLACK);
-        g2.fill(box);
+        g2.fillRect(x, y, width, height);
     }
 
-    private void drawTrafficLightBulbs(Graphics2D g2, int xLeft, int yTop) {
-        drawRedBulb(g2, xLeft, yTop);
-        drawYellowBulb(g2, xLeft, yTop);
-        drawGreenBulb(g2, xLeft, yTop);
+    private void drawTrafficLightBulbs(Graphics2D g2, int x, int y, int width, int diameter, int gap) {
+        int bulbX = x + (width - diameter) / 2; // Center bulbs horizontally within the black box
+
+        // Draw the bulbs
+        drawBulb(g2, bulbX, y + gap, diameter, blinkingService.isRedVisible() ? Color.RED.brighter().brighter() : Color.RED.darker().darker());
+        drawBulb(g2, bulbX, y + diameter + 2 * gap, diameter, blinkingService.isYellowVisible() ? Color.YELLOW.brighter().brighter() : Color.YELLOW.darker().darker());
+        drawBulb(g2, bulbX, y + 2 * (diameter + gap) + gap, diameter, blinkingService.isGreenVisible() ? Color.GREEN.brighter().brighter() : Color.GREEN.darker().darker());
     }
 
-    private void drawRedBulb(Graphics2D g2, int xLeft, int yTop) {
-        Ellipse2D.Double redBulb = new Ellipse2D.Double(xLeft + GAP, yTop + GAP, TRAFFIC_LIGHT_WIDTH - 2 * GAP, TRAFFIC_LIGHT_WIDTH - 2 * GAP);
-        g2.setColor(blinkingService.isRedVisible() ? RED_ON : RED_OFF);
-        g2.fill(redBulb);
-    }
-
-    private void drawYellowBulb(Graphics2D g2, int xLeft, int yTop) {
-        Ellipse2D.Double YellowBulb = new Ellipse2D.Double(xLeft + GAP, yTop + TRAFFIC_LIGHT_WIDTH, TRAFFIC_LIGHT_WIDTH - 2 * GAP, TRAFFIC_LIGHT_WIDTH - 2 * GAP);
-        g2.setColor(blinkingService.isYellowVisible() ? YELLOW_ON : YELLOW_OFF);
-        g2.fill(YellowBulb);
-    }
-
-    private void drawGreenBulb(Graphics2D g2, int xLeft, int yTop) {
-        Ellipse2D.Double greenBulb = new Ellipse2D.Double(xLeft + GAP, yTop + 2 * TRAFFIC_LIGHT_WIDTH - GAP, TRAFFIC_LIGHT_WIDTH - 2 * GAP, TRAFFIC_LIGHT_WIDTH - 2 * GAP);
-        g2.setColor(blinkingService.isGreenVisible() ? GREEN_ON : GREEN_OFF);
-        g2.fill(greenBulb);
+    private void drawBulb(Graphics2D g2, int x, int y, int diameter, Color color) {
+        Ellipse2D.Double bulb = new Ellipse2D.Double(x, y, diameter, diameter);
+        g2.setColor(color);
+        g2.fill(bulb);
     }
 }
