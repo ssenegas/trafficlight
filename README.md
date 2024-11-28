@@ -8,12 +8,11 @@ The application periodically sends a GET request to a specified URL that hosts a
 
 The response data is parsed into a `TrafficLight` object, which updates the application's model with the current status. This model is reflected across various views, with one view dedicated to sending commands to the Arduino board through serial communication. The GUI primarily serves as a development tool, allowing manual interaction with the model and displaying its state, though the app typically runs minimized in the system tray.
 
-The Arduino firmware interprets commands from the application to control the LEDs' states (on/off/blink). 
+The Arduino firmware interprets commands from the application to control the LEDs' states (on/off/blink).
+
+![image](https://github.com/user-attachments/assets/2775072c-a366-4ccf-8a76-99bfd86dfffa)
 
 ## Related Projects
 
 This project directly relates to [RedLight](https://github.com/ssenegas/RedLight), which contains additional code and resources necessary for full functionality.
-
-![image](https://github.com/user-attachments/assets/c54c2428-8f0b-47f8-985b-ccc28ebf088d)
-
 The [greenlight](https://github.com/llschall/greenlight) fork features [ardwloop](https://llschall.github.io/ardwloop/) instead.
