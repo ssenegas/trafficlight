@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TrafficLightTest {
 
     @Test
-    void givenDefaultConstructorShouldInitializeAllLedsOffAndNoDelay() {
+    void givenDefaultConstructorShouldInitializeAllBulbsOffAndNoDelay() {
         // when
         TrafficLight trafficLight = new TrafficLight();
 
@@ -23,23 +23,21 @@ class TrafficLightTest {
     }
 
     @Test
-    void givenInputToParseShouldCreateModelWithLedTrulyInitialized() {
+    void givenInputToParseShouldCreateModelWithBulbsTrulyInitialized() {
         // given
-        String[] values = { "On", "Off", "On" };
+        String input = "Green:On, Yellow:Off, Red:On";
 
         // when
-        TrafficLight trafficLight = TrafficLight.parse(
-                "Green:On, Yellow:Off, Red:On"
-        );
+        TrafficLight trafficLight = TrafficLight.parse(input);
 
         // then
         assertTrue(trafficLight.getBulb(Light.GREEN).isOn());
         assertFalse(trafficLight.getBulb(Light.YELLOW).isOn());
-        assertTrue(trafficLight.getBulb(Light.GREEN).isOn());
+        assertTrue(trafficLight.getBulb(Light.RED).isOn());
     }
 
     @Test
-    void givenInputToParseShouldInitializeBlinkingLedsWithDelays() {
+    void givenInputToParseShouldInitializeBlinkingBulbsWithDelays() {
         // given
         String input = "Green:Blinking, Yellow:Off, Red:Blinking";
 
@@ -67,7 +65,7 @@ class TrafficLightTest {
     }
 
     @Test
-    void shouldTurnOnAndOffLedsCorrectly() {
+    void shouldTurnOnAndOffBulbsCorrectly() {
         // given
         TrafficLight trafficLight = new TrafficLight();
 
@@ -81,7 +79,7 @@ class TrafficLightTest {
     }
 
     @Test
-    void shouldSetAndRetrieveDelayForLeds() {
+    void shouldSetAndRetrieveDelayForBulbs() {
         // given
         TrafficLight trafficLight = new TrafficLight();
 
