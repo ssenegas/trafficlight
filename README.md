@@ -10,7 +10,7 @@ The response data is parsed into a `TrafficLight` object, which updates the appl
 
 The Arduino firmware interprets commands from the application to control the LEDs' states (on/off/blink).
 
-![image](https://github.com/user-attachments/assets/2775072c-a366-4ccf-8a76-99bfd86dfffa)
+![image](https://github.com/user-attachments/assets/d60daf3a-20c3-4a71-aae9-8bcb424666e8)
 
 ## Related Projects
 
