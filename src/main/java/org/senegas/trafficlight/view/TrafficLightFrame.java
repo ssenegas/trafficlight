@@ -1,11 +1,11 @@
 package org.senegas.trafficlight.view;
 
 import net.miginfocom.swing.MigLayout;
+
 import org.apache.hc.core5.net.URIBuilder;
 import org.senegas.trafficlight.TrafficLightApp;
 import org.senegas.trafficlight.model.TrafficLightModel;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
@@ -21,9 +21,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.*;
+
 /**
- * View-Controller class (UI Delegate) that handles UI and events
- * Specialized with system tray icon
+ * View-Controller class (UI Delegate) that handles UI and events Specialized with system tray icon
  * see <a href="https://docs.oracle.com/javase/tutorial/uiswing/misc/systemtray.html">systemtray</a>
  */
 public class TrafficLightFrame extends JFrame implements PropertyChangeListener {
@@ -77,36 +78,50 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
         final JPanel actionPanel = new JPanel(new MigLayout());
 
         this.redButton = addLabeledToggleButton(actionPanel, "Red");
-        this.redButton.addItemListener(e -> controller.handleRedToggle(e.getStateChange() == ItemEvent.SELECTED));
+        this.redButton.addItemListener(
+                e -> this.controller.handleRedToggle(e.getStateChange() == ItemEvent.SELECTED));
 
         this.redSpinner = addSpinner(actionPanel);
-        this.redSpinner.addChangeListener(e -> controller.handleRedDelayChange((Integer) redSpinner.getValue()));
+        this.redSpinner.addChangeListener(
+                e -> this.controller.handleRedDelayChange((Integer) this.redSpinner.getValue()));
 
         this.yellowButton = addLabeledToggleButton(actionPanel, "Yellow");
-        this.yellowButton.addItemListener(e -> controller.handleYellowToggle(e.getStateChange() == ItemEvent.SELECTED));
+        this.yellowButton.addItemListener(
+                e -> this.controller.handleYellowToggle(e.getStateChange() == ItemEvent.SELECTED));
 
         this.yellowSpinner = addSpinner(actionPanel);
-        this.yellowSpinner.addChangeListener(e -> controller.handleYellowDelayChange((Integer) yellowSpinner.getValue()));
+        this.yellowSpinner.addChangeListener(
+                e ->
+                        this.controller.handleYellowDelayChange(
+                                (Integer) this.yellowSpinner.getValue()));
 
         this.greenButton = addLabeledToggleButton(actionPanel, "Green");
-        this.greenButton.addItemListener(e -> controller.handleGreenToggle(e.getStateChange() == ItemEvent.SELECTED));
+        this.greenButton.addItemListener(
+                e -> this.controller.handleGreenToggle(e.getStateChange() == ItemEvent.SELECTED));
 
         this.greenSpinner = addSpinner(actionPanel);
-        this.greenSpinner.addChangeListener(e -> controller.handleGreenDelayChange((Integer) greenSpinner.getValue()));
+        this.greenSpinner.addChangeListener(
+                e ->
+                        this.controller.handleGreenDelayChange(
+                                (Integer) this.greenSpinner.getValue()));
 
         this.trafficLightComponent = new TrafficLightComponent(this.controller.getModel());
 
         this.add(actionPanel, BorderLayout.CENTER);
-        this.add(trafficLightComponent, BorderLayout.EAST);
+        this.add(this.trafficLightComponent, BorderLayout.EAST);
     }
 
     private Properties loadAppProperties() {
         final Properties appProps = new Properties();
-        try (InputStream resourceAsStream = TrafficLightController.class.getClassLoader()
-                .getResourceAsStream("app.properties")) {
+        try (InputStream resourceAsStream =
+                TrafficLightController.class
+                        .getClassLoader()
+                        .getResourceAsStream("app.properties")) {
             appProps.load(resourceAsStream);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Something went wrong when reading application properties: {0}",
+            LOGGER.log(
+                    Level.SEVERE,
+                    "Something went wrong when reading application properties: {0}",
                     e.getMessage());
         }
         return appProps;
@@ -115,8 +130,8 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
     private URL getLightURL() {
         Properties appProps = loadAppProperties();
         try {
-            URIBuilder uriBuilder = new URIBuilder(
-                    appProps.getProperty(INFO_URL_LIGHT_KEY, DEFAULT_URL));
+            URIBuilder uriBuilder =
+                    new URIBuilder(appProps.getProperty(INFO_URL_LIGHT_KEY, DEFAULT_URL));
             String letterCode = appProps.getProperty(FOUR_LETTER_CODE_KEY);
             if (letterCode != null) {
                 uriBuilder.addParameter("user", letterCode);
@@ -139,10 +154,7 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
     }
 
     private JSpinner addSpinner(Container c) {
-        final SpinnerModel spinnerNumberModel = new SpinnerNumberModel(0,
-                0,
-                5000,
-                500);
+        final SpinnerModel spinnerNumberModel = new SpinnerNumberModel(0, 0, 5000, 500);
         final JSpinner spinner = new JSpinner(spinnerNumberModel);
         c.add(spinner);
         c.add(new JLabel("ms"), "wrap");
@@ -150,14 +162,15 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
     }
 
     private void createTrayIcon() {
-        if (! SystemTray.isSupported()) {
+        if (!SystemTray.isSupported()) {
             LOGGER.log(Level.CONFIG, "SystemTray is not supported");
             return;
         }
 
         this.tray = SystemTray.getSystemTray();
         this.trayIcon =
-                new TrayIcon(createImage("/images/Traffic_lights_icon.gif", "tray icon"),
+                new TrayIcon(
+                        createImage("/images/Traffic_lights_icon.gif", "tray icon"),
                         "TrafficLight",
                         createTrayIconPopupMenu());
         this.trayIcon.setImageAutoSize(true);
@@ -243,10 +256,11 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("traffic-light".equals(evt.getPropertyName())) {
-            SwingUtilities.invokeLater(() -> {
-                updateButtonsFromModel();
-                updateSpinnersFromModel();
-            });
+            SwingUtilities.invokeLater(
+                    () -> {
+                        updateButtonsFromModel();
+                        updateSpinnersFromModel();
+                    });
         }
     }
 

@@ -9,10 +9,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public enum CommPortSelector {
-	
-	INSTANCE;
+    INSTANCE;
 
-	private static final Logger LOGGER = Logger.getLogger(CommPortSelector.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CommPortSelector.class.getName());
 
     private CommPortSelector() {
         // hide constructor
@@ -24,23 +23,31 @@ public enum CommPortSelector {
         LOGGER.log(Level.INFO, "{0} port(s) found:", list.size());
 
         for (SerialPort port : list) {
-        	LOGGER.log(Level.INFO, "{0} {1} {2} {3}", 
-        			new Object[] { port.getSystemPortName(), port.getDescriptivePortName(),
-        					               port.getSystemPortPath(), port.getPortLocation() });
+            LOGGER.log(
+                    Level.INFO,
+                    "{0} {1} {2} {3}",
+                    new Object[] {
+                        port.getSystemPortName(),
+                        port.getDescriptivePortName(),
+                        port.getSystemPortPath(),
+                        port.getPortLocation()
+                    });
         }
     }
 
     public SerialPort select() throws CommPortException {
 
         SerialPort[] commPorts = SerialPort.getCommPorts();
-        Optional<SerialPort> opt = Arrays.stream(commPorts)
-                .filter(port -> port.getDescriptivePortName().contains("CH340"))
-                .findFirst();
+        Optional<SerialPort> opt =
+                Arrays.stream(commPorts)
+                        .filter(port -> port.getDescriptivePortName().contains("CH340"))
+                        .findFirst();
 
         if (opt.isEmpty()) {
-            opt = Arrays.stream(commPorts)
-                    .filter(p -> p.getDescriptivePortName().contains("USB"))
-                    .findFirst();
+            opt =
+                    Arrays.stream(commPorts)
+                            .filter(p -> p.getDescriptivePortName().contains("USB"))
+                            .findFirst();
         }
 
         if (opt.isEmpty()) {

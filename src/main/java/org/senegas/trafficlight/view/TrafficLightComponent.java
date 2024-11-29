@@ -3,14 +3,16 @@ package org.senegas.trafficlight.view;
 import org.senegas.trafficlight.model.TrafficLightModel;
 import org.senegas.trafficlight.service.TrafficLightBlinkingService;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.*;
+
 public class TrafficLightComponent extends JComponent implements PropertyChangeListener {
-    private static final double WIDTH_TO_HEIGHT_RATIO = 1.0 / 3.0; // Black box width is 1/3 of its height
+    private static final double WIDTH_TO_HEIGHT_RATIO =
+            1.0 / 3.0; // Black box width is 1/3 of its height
     private static final double BULB_TO_BOX_RATIO = 0.66; // Bulb diameter is 66% of black box width
 
     private final TrafficLightModel model;
@@ -61,7 +63,9 @@ public class TrafficLightComponent extends JComponent implements PropertyChangeL
 
         // Calculate bulb dimensions
         int bulbDiameter = (int) (blackBoxWidth * BULB_TO_BOX_RATIO);
-        int gap = (blackBoxHeight - 3 * bulbDiameter) / 4; // Divide remaining space into 4 gaps (top, middle, bottom)
+        int gap =
+                (blackBoxHeight - 3 * bulbDiameter)
+                        / 4; // Divide remaining space into 4 gaps (top, middle, bottom)
 
         // Draw the traffic light
         drawTrafficLightBlackBox(g2, blackBoxX, blackBoxY, blackBoxWidth, blackBoxHeight);
@@ -73,13 +77,35 @@ public class TrafficLightComponent extends JComponent implements PropertyChangeL
         g2.fillRect(x, y, width, height);
     }
 
-    private void drawTrafficLightBulbs(Graphics2D g2, int x, int y, int width, int diameter, int gap) {
+    private void drawTrafficLightBulbs(
+            Graphics2D g2, int x, int y, int width, int diameter, int gap) {
         int bulbX = x + (width - diameter) / 2; // Center bulbs horizontally within the black box
 
         // Draw the bulbs
-        drawBulb(g2, bulbX, y + gap, diameter, blinkingService.isRedVisible() ? Color.RED.brighter().brighter() : Color.RED.darker().darker());
-        drawBulb(g2, bulbX, y + diameter + 2 * gap, diameter, blinkingService.isYellowVisible() ? Color.YELLOW.brighter().brighter() : Color.YELLOW.darker().darker());
-        drawBulb(g2, bulbX, y + 2 * (diameter + gap) + gap, diameter, blinkingService.isGreenVisible() ? Color.GREEN.brighter().brighter() : Color.GREEN.darker().darker());
+        drawBulb(
+                g2,
+                bulbX,
+                y + gap,
+                diameter,
+                this.blinkingService.isRedVisible()
+                        ? Color.RED.brighter().brighter()
+                        : Color.RED.darker().darker());
+        drawBulb(
+                g2,
+                bulbX,
+                y + diameter + 2 * gap,
+                diameter,
+                this.blinkingService.isYellowVisible()
+                        ? Color.YELLOW.brighter().brighter()
+                        : Color.YELLOW.darker().darker());
+        drawBulb(
+                g2,
+                bulbX,
+                y + 2 * (diameter + gap) + gap,
+                diameter,
+                this.blinkingService.isGreenVisible()
+                        ? Color.GREEN.brighter().brighter()
+                        : Color.GREEN.darker().darker());
     }
 
     private void drawBulb(Graphics2D g2, int x, int y, int diameter, Color color) {

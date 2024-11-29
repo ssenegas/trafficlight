@@ -3,7 +3,6 @@ package org.senegas.trafficlight.view;
 import org.senegas.trafficlight.model.TrafficLight;
 import org.senegas.trafficlight.model.TrafficLightModel;
 
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,9 +14,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * TrafficLightController handles business logic, including periodic tasks.
- */
+import javax.swing.*;
+
+/** TrafficLightController handles business logic, including periodic tasks. */
 public class TrafficLightController {
     private static final Logger LOGGER = Logger.getLogger(TrafficLightController.class.getName());
 
@@ -35,35 +34,35 @@ public class TrafficLightController {
      */
     public void startPolling(URL url) {
         // Schedule the PollingLightURLTask to run every 5 seconds
-        scheduler.scheduleAtFixedRate(() -> {
-            try {
-                pollLightURL(url);
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Error during polling task: {0}", e);
-            }
-        }, 2, 15, TimeUnit.SECONDS);
+        this.scheduler.scheduleAtFixedRate(
+                () -> {
+                    try {
+                        pollLightURL(url);
+                    } catch (Exception e) {
+                        LOGGER.log(Level.SEVERE, "Error during polling task: {0}", e);
+                    }
+                },
+                2,
+                60,
+                TimeUnit.SECONDS);
     }
 
-    /**
-     * Stops the scheduler gracefully.
-     */
+    /** Stops the scheduler gracefully. */
     public void stop() {
-        scheduler.shutdown();
+        this.scheduler.shutdown();
         try {
-            if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
-                scheduler.shutdownNow();
+            if (!this.scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                this.scheduler.shutdownNow();
             }
         } catch (InterruptedException e) {
-            scheduler.shutdownNow();
+            this.scheduler.shutdownNow();
             Thread.currentThread().interrupt();
         }
     }
 
-    /**
-     * Returns the model.
-     */
+    /** Returns the model. */
     public TrafficLightModel getModel() {
-        return model;
+        return this.model;
     }
 
     /**
@@ -73,9 +72,9 @@ public class TrafficLightController {
      */
     public void handleRedToggle(boolean isSelected) {
         if (isSelected) {
-            model.turnOnRed();
+            this.model.turnOnRed();
         } else {
-            model.turnOffRed();
+            this.model.turnOffRed();
         }
     }
 
@@ -85,7 +84,7 @@ public class TrafficLightController {
      * @param delay the new delay value
      */
     public void handleRedDelayChange(int delay) {
-        model.setRedDelay(delay);
+        this.model.setRedDelay(delay);
     }
 
     /**
@@ -95,9 +94,9 @@ public class TrafficLightController {
      */
     public void handleYellowToggle(boolean isSelected) {
         if (isSelected) {
-            model.turnOnYellow();
+            this.model.turnOnYellow();
         } else {
-            model.turnOffYellow();
+            this.model.turnOffYellow();
         }
     }
 
@@ -107,7 +106,7 @@ public class TrafficLightController {
      * @param delay the new delay value
      */
     public void handleYellowDelayChange(int delay) {
-        model.setYellowDelay(delay);
+        this.model.setYellowDelay(delay);
     }
 
     /**
@@ -117,9 +116,9 @@ public class TrafficLightController {
      */
     public void handleGreenToggle(boolean isSelected) {
         if (isSelected) {
-            model.turnOnGreen();
+            this.model.turnOnGreen();
         } else {
-            model.turnOffGreen();
+            this.model.turnOffGreen();
         }
     }
 
@@ -129,7 +128,7 @@ public class TrafficLightController {
      * @param delay the new delay value
      */
     public void handleGreenDelayChange(int delay) {
-        model.setGreenDelay(delay);
+        this.model.setGreenDelay(delay);
     }
 
     /**
@@ -150,7 +149,8 @@ public class TrafficLightController {
         LOGGER.log(Level.INFO, "HTTP response code: {0}", responseCode);
 
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            try (BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 StringBuilder content = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {

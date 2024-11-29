@@ -4,7 +4,6 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,58 +23,70 @@ public class ConnectionManager {
     public ConnectionManager(SerialPort jSerialPort) {
         this.serialPort = jSerialPort;
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            LOGGER.log(Level.INFO, "Closing port {0}...", jSerialPort.getSystemPortPath());
-            boolean isPortClosed = jSerialPort.closePort();
-            LOGGER.log(Level.INFO, "Closing port has {0}", (isPortClosed ? "been successful" : "failed"));
-        }));
+        Runtime.getRuntime()
+                .addShutdownHook(
+                        new Thread(
+                                () -> {
+                                    LOGGER.log(
+                                            Level.INFO,
+                                            "Closing port {0}...",
+                                            jSerialPort.getSystemPortPath());
+                                    boolean isPortClosed = jSerialPort.closePort();
+                                    LOGGER.log(
+                                            Level.INFO,
+                                            "Closing port has {0}",
+                                            (isPortClosed ? "been successful" : "failed"));
+                                }));
 
         connect();
     }
 
     public void addConnectionListener(ConnectionListener listener) {
-        listeners.add(listener);
+        this.listeners.add(listener);
     }
 
     private void notifyDisconnect() {
-        for (ConnectionListener listener : listeners) {
+        for (ConnectionListener listener : this.listeners) {
             listener.onDisconnect();
         }
     }
 
     private void notifyReconnect() {
-        for (ConnectionListener listener : listeners) {
+        for (ConnectionListener listener : this.listeners) {
             listener.onReconnect();
         }
     }
 
     public void connect() {
-        if (serialPort.openPort()) {
+        if (this.serialPort.openPort()) {
             // https://fazecast.github.io/jSerialComm/javadoc/com/fazecast/jSerialComm/SerialPortDataListener.html
             // https://github.com/Fazecast/jSerialComm/wiki/Event-Based-Reading-Usage-Example
-            serialPort.addDataListener(new SerialPortDataListener() {
-                @Override
-                public int getListeningEvents() {
-                    return SerialPort.LISTENING_EVENT_PORT_DISCONNECTED;
-                }
+            this.serialPort.addDataListener(
+                    new SerialPortDataListener() {
+                        @Override
+                        public int getListeningEvents() {
+                            return SerialPort.LISTENING_EVENT_PORT_DISCONNECTED;
+                        }
 
-                @Override
-                public void serialEvent(SerialPortEvent event) {
-                    switch (event.getEventType()) {
-                        // https://github.com/Fazecast/jSerialComm/wiki/Modes-of-Operation#for-port-disconnects
-                        case SerialPort.LISTENING_EVENT_PORT_DISCONNECTED:
-                            LOGGER.log(Level.INFO, "Port disconnected. Attempting to reconnect...");
+                        @Override
+                        public void serialEvent(SerialPortEvent event) {
+                            switch (event.getEventType()) {
+                                // https://github.com/Fazecast/jSerialComm/wiki/Modes-of-Operation#for-port-disconnects
+                                case SerialPort.LISTENING_EVENT_PORT_DISCONNECTED:
+                                    LOGGER.log(
+                                            Level.INFO,
+                                            "Port disconnected. Attempting to reconnect...");
 
-                            handlePortDisconnection();
-                            break;
-                    }
-                }
-            });
+                                    handlePortDisconnection();
+                                    break;
+                            }
+                        }
+                    });
         }
     }
 
     public boolean isConnected() {
-        return serialPort.isOpen();
+        return this.serialPort.isOpen();
     }
 
     public SerialPort getSerialPort() {
@@ -83,22 +94,29 @@ public class ConnectionManager {
     }
 
     private void handlePortDisconnection() {
-        serialPort.closePort();
+        this.serialPort.closePort();
         notifyDisconnect();
-        int reconnectInterval = BASE_RECONNECT_INTERVAL;
+        int reconnectInterval = this.BASE_RECONNECT_INTERVAL;
         int attemptCount = 0;
 
-        while (! serialPort.isOpen() && attemptCount < MAX_RETRIES) {
+        while (!this.serialPort.isOpen() && attemptCount < this.MAX_RETRIES) {
             try {
                 Thread.sleep(reconnectInterval);
                 LOGGER.log(Level.INFO, "Attempting to reconnect...");
-                if (serialPort.openPort()) {
+                if (this.serialPort.openPort()) {
                     LOGGER.log(Level.INFO, "Reconnected successfully.");
-                    reconnectInterval = BASE_RECONNECT_INTERVAL; // Reset interval on success
+                    reconnectInterval = this.BASE_RECONNECT_INTERVAL; // Reset interval on success
                     notifyReconnect();
                 } else {
-                    reconnectInterval = Math.min(reconnectInterval * 2, MAX_RECONNECT_INTERVAL); // Exponential backoff
-                    LOGGER.log(Level.INFO, "Reconnection failed. Next attempt in " + reconnectInterval / 1000 + " seconds.");
+                    reconnectInterval =
+                            Math.min(
+                                    reconnectInterval * 2,
+                                    this.MAX_RECONNECT_INTERVAL); // Exponential backoff
+                    LOGGER.log(
+                            Level.INFO,
+                            "Reconnection failed. Next attempt in "
+                                    + reconnectInterval / 1000
+                                    + " seconds.");
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -108,8 +126,9 @@ public class ConnectionManager {
             attemptCount++;
         }
 
-        if (! serialPort.isOpen()) {
-            LOGGER.log(Level.SEVERE, "Failed to reconnect after " + MAX_RETRIES + " attempts.");
+        if (!this.serialPort.isOpen()) {
+            LOGGER.log(
+                    Level.SEVERE, "Failed to reconnect after " + this.MAX_RETRIES + " attempts.");
         }
     }
 }

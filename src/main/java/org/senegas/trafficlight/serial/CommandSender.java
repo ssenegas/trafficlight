@@ -15,14 +15,16 @@ public class CommandSender implements ConnectionListener {
     }
 
     public void send(String command) {
-        if (connectionManager.isConnected()) {
-            int written = connectionManager.getSerialPort().writeBytes((command + "\0").getBytes(), command.length() + 1);
+        if (this.connectionManager.isConnected()) {
+            int written =
+                    this.connectionManager
+                            .getSerialPort()
+                            .writeBytes((command + "\0").getBytes(), command.length() + 1);
             if (written == -1) {
                 LOGGER.log(Level.SEVERE, "There was an error writing to the port.");
             }
-            lastSentCommand = command;
+            this.lastSentCommand = command;
         }
-
     }
 
     @Override
@@ -32,12 +34,12 @@ public class CommandSender implements ConnectionListener {
 
     @Override
     public void onReconnect() {
-        if (lastSentCommand != null) {
+        if (this.lastSentCommand != null) {
             LOGGER.log(Level.INFO, "Resend last command after reconnect.");
             try {
                 LOGGER.log(Level.INFO, "Wait seconds in case the Arduino board is booting...");
                 Thread.sleep(10_000);
-                send(lastSentCommand); // Resend last command after reconnect
+                send(this.lastSentCommand); // Resend last command after reconnect
                 LOGGER.log(Level.INFO, "Last command resent.");
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

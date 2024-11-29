@@ -16,10 +16,10 @@ public enum Light {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public Color getColor() {
-        return color;
+        return this.color;
     }
 }

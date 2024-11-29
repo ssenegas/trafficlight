@@ -2,15 +2,15 @@ package org.senegas.trafficlight.service;
 
 import org.senegas.trafficlight.model.TrafficLightModel;
 
-import javax.swing.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Handles blinking logic for the traffic light bulbs, without modifying the model.
- */
+import javax.swing.*;
+
+/** Handles blinking logic for the traffic light bulbs, without modifying the model. */
 public class TrafficLightBlinkingService {
-    private static final Logger LOGGER = Logger.getLogger(TrafficLightBlinkingService.class.getName());
+    private static final Logger LOGGER =
+            Logger.getLogger(TrafficLightBlinkingService.class.getName());
 
     private final TrafficLightModel model;
     private final Timer swingTimer;
@@ -32,20 +32,16 @@ public class TrafficLightBlinkingService {
         this.swingTimer = new Timer(20, e -> updateBlinkingState());
     }
 
-    /**
-     * Starts the blinking timer.
-     */
+    /** Starts the blinking timer. */
     public void start() {
         LOGGER.log(Level.INFO, "Starting blinking service.");
-        swingTimer.start();
+        this.swingTimer.start();
     }
 
-    /**
-     * Stops the blinking timer.
-     */
+    /** Stops the blinking timer. */
     public void stop() {
         LOGGER.log(Level.INFO, "Stopping blinking service.");
-        swingTimer.stop();
+        this.swingTimer.stop();
     }
 
     /**
@@ -54,7 +50,7 @@ public class TrafficLightBlinkingService {
      * @return true if the red LED is ON, false otherwise.
      */
     public boolean isRedVisible() {
-        return model.getRedDelay() > 0 ? blinkingRed : model.isRedOn();
+        return this.model.getRedDelay() > 0 ? this.blinkingRed : this.model.isRedOn();
     }
 
     /**
@@ -63,7 +59,7 @@ public class TrafficLightBlinkingService {
      * @return true if the yellow LED is ON, false otherwise.
      */
     public boolean isYellowVisible() {
-        return model.getYellowDelay() > 0 ? blinkingYellow : model.isYellowOn();
+        return this.model.getYellowDelay() > 0 ? this.blinkingYellow : this.model.isYellowOn();
     }
 
     /**
@@ -72,12 +68,10 @@ public class TrafficLightBlinkingService {
      * @return true if the green LED is ON, false otherwise.
      */
     public boolean isGreenVisible() {
-        return model.getGreenDelay() > 0 ? blinkingGreen : model.isGreenOn();
+        return this.model.getGreenDelay() > 0 ? this.blinkingGreen : this.model.isGreenOn();
     }
 
-    /**
-     * Updates the blinking state for each LED based on the delays configured in the model.
-     */
+    /** Updates the blinking state for each LED based on the delays configured in the model. */
     private void updateBlinkingState() {
         long currentTime = System.currentTimeMillis();
 
@@ -88,48 +82,48 @@ public class TrafficLightBlinkingService {
 
         // Trigger UI updates only if a state changed
         if (redStateChanged || yellowStateChanged || greenStateChanged) {
-            model.notifyBlinkingStateChanged();
+            this.model.notifyBlinkingStateChanged();
         }
     }
 
     private boolean updateRedBlinking(long currentTime) {
-        int redDelay = model.getRedDelay();
+        int redDelay = this.model.getRedDelay();
         if (redDelay > 0) {
-            if (currentTime - lastRedUpdate >= redDelay) {
-                blinkingRed = !blinkingRed;
-                lastRedUpdate = currentTime;
+            if (currentTime - this.lastRedUpdate >= redDelay) {
+                this.blinkingRed = !this.blinkingRed;
+                this.lastRedUpdate = currentTime;
                 return true;
             }
         } else {
-            blinkingRed = model.isRedOn(); // Use static toggle state
+            this.blinkingRed = this.model.isRedOn(); // Use static toggle state
         }
         return false;
     }
 
     private boolean updateYellowBlinking(long currentTime) {
-        int yellowDelay = model.getYellowDelay();
+        int yellowDelay = this.model.getYellowDelay();
         if (yellowDelay > 0) {
-            if (currentTime - lastYellowUpdate >= yellowDelay) {
-                blinkingYellow = !blinkingYellow;
-                lastYellowUpdate = currentTime;
+            if (currentTime - this.lastYellowUpdate >= yellowDelay) {
+                this.blinkingYellow = !this.blinkingYellow;
+                this.lastYellowUpdate = currentTime;
                 return true;
             }
         } else {
-            blinkingYellow = model.isYellowOn(); // Use static toggle state
+            this.blinkingYellow = this.model.isYellowOn(); // Use static toggle state
         }
         return false;
     }
 
     private boolean updateGreenBlinking(long currentTime) {
-        int greenDelay = model.getGreenDelay();
+        int greenDelay = this.model.getGreenDelay();
         if (greenDelay > 0) {
-            if (currentTime - lastGreenUpdate >= greenDelay) {
-                blinkingGreen = !blinkingGreen;
-                lastGreenUpdate = currentTime;
+            if (currentTime - this.lastGreenUpdate >= greenDelay) {
+                this.blinkingGreen = !this.blinkingGreen;
+                this.lastGreenUpdate = currentTime;
                 return true;
             }
         } else {
-            blinkingGreen = model.isGreenOn(); // Use static toggle state
+            this.blinkingGreen = this.model.isGreenOn(); // Use static toggle state
         }
         return false;
     }
