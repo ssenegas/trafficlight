@@ -32,9 +32,12 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
 
     private static final String INFO_URL_LIGHT_KEY = "info.url.light";
     private static final String FOUR_LETTER_CODE_KEY = "4lc";
+    private static final String PERIOD_KEY = "period";
     private static final String DEFAULT_URL = "https://info.swiss-as.com/light.txt";
+    private static final String DEFAULT_PERIOD = "60";
 
     private final TrafficLightController controller;
+    private final Properties appProperties;
 
     private JToggleButton redButton;
     private JToggleButton yellowButton;
@@ -51,6 +54,7 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
     public TrafficLightFrame(String title, TrafficLightModel model) throws HeadlessException {
         super(title);
         setLayout(new BorderLayout());
+        this.appProperties = loadAppProperties();
         this.controller = new TrafficLightController(model);
         model.addPropertyChangeListener(this);
 
@@ -58,7 +62,8 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
         initSerialMessageEmitter();
         createTrayIcon();
 
-        this.controller.startPolling(getLightURL());
+        long period = Long.parseLong(this.appProperties.getProperty(PERIOD_KEY, DEFAULT_PERIOD));
+        this.controller.startPolling(getLightURL(), period);
     }
 
     @Override
@@ -128,11 +133,10 @@ public class TrafficLightFrame extends JFrame implements PropertyChangeListener 
     }
 
     private URL getLightURL() {
-        Properties appProps = loadAppProperties();
         try {
             URIBuilder uriBuilder =
-                    new URIBuilder(appProps.getProperty(INFO_URL_LIGHT_KEY, DEFAULT_URL));
-            String letterCode = appProps.getProperty(FOUR_LETTER_CODE_KEY);
+                    new URIBuilder(this.appProperties.getProperty(INFO_URL_LIGHT_KEY, DEFAULT_URL));
+            String letterCode = this.appProperties.getProperty(FOUR_LETTER_CODE_KEY);
             if (letterCode != null) {
                 uriBuilder.addParameter("user", letterCode);
             }

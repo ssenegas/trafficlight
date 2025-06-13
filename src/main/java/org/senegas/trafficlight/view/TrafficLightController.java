@@ -14,8 +14,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.*;
-
 /** TrafficLightController handles business logic, including periodic tasks. */
 public class TrafficLightController {
     private static final Logger LOGGER = Logger.getLogger(TrafficLightController.class.getName());
@@ -31,8 +29,9 @@ public class TrafficLightController {
      * Start polling the traffic light data from the specified URL periodically.
      *
      * @param url the URL to poll
+     * @param period
      */
-    public void startPolling(URL url) {
+    public void startPolling(URL url, long period) {
         // Schedule the PollingLightURLTask to run every 5 seconds
         this.scheduler.scheduleAtFixedRate(
                 () -> {
@@ -43,7 +42,7 @@ public class TrafficLightController {
                     }
                 },
                 2,
-                60,
+                period,
                 TimeUnit.SECONDS);
     }
 
